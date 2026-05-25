@@ -13,16 +13,16 @@ _APP_DIR = Path(__file__).resolve().parents[1]
 if str(_APP_DIR) not in sys.path:
     sys.path.insert(0, str(_APP_DIR))
 
-from components.plots import weights_bar  # noqa: E402
-from components.sidebar import render_sidebar  # noqa: E402
-from components.theme import inject_css, register_plotly_template  # noqa: E402
+from components.plots import weights_bar
+from components.sidebar import render_sidebar
+from components.theme import inject_css, register_plotly_template
 
 st.set_page_config(page_title="Black-Litterman", layout="wide")
 register_plotly_template()
 inject_css()
 
 try:
-    from markowitz.bl import BlackLitterman  # type: ignore
+    from markowitz.views import BlackLitterman  # type: ignore
 
     HAS_BL = True
     _import_error: str | None = None

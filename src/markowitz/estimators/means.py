@@ -164,10 +164,8 @@ class JorionBayesStein(_BaseMean):
         dispersion = max(dispersion, 0.0)
 
         denom_phi = (n_assets + 2) + n_obs * dispersion
-        if denom_phi <= 0.0:  # pragma: no cover - dispersion>=0 and n_assets>=1 keep this >0
-            phi = 1.0
-        else:
-            phi = (n_assets + 2) / denom_phi
+        # pragma: no cover - dispersion>=0 and n_assets>=1 keep this >0
+        phi = 1.0 if denom_phi <= 0.0 else (n_assets + 2) / denom_phi
         phi = float(np.clip(phi, 0.0, 1.0))
 
         blended = (1.0 - phi) * sample_mean + phi * mu0 * ones

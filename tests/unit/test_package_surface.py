@@ -4,7 +4,7 @@ from __future__ import annotations
 
 
 def test_version_present() -> None:
-    import markowitz  # noqa: PLC0415  (local import is the unit under test)
+    import markowitz
 
     assert isinstance(markowitz.__version__, str)
     assert len(markowitz.__version__) > 0
@@ -12,7 +12,7 @@ def test_version_present() -> None:
 
 def test_headline_imports() -> None:
     """Headline classes must be importable in one hop."""
-    from markowitz import (  # noqa: PLC0415  (local import is the unit under test)
+    from markowitz import (
         AbsoluteView,
         AnalyticFrontier,
         BlackLitterman,
@@ -59,7 +59,7 @@ def test_headline_imports() -> None:
 
 def test_all_consistent() -> None:
     """Every name in __all__ must be importable."""
-    import markowitz  # noqa: PLC0415  (local import is the unit under test)
+    import markowitz
 
     for name in markowitz.__all__:
         assert hasattr(markowitz, name), f"__all__ lists {name!r} but it's not present"

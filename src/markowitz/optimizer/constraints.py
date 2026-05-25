@@ -90,8 +90,8 @@ class WeightBounds:
     def _resolve(
         self, bound: float | Sequence[float], n: int
     ) -> np.ndarray:
-        if np.isscalar(bound):
-            return np.full(n, float(bound))  # type: ignore[arg-type]
+        if isinstance(bound, (int, float)):
+            return np.full(n, float(bound))
         arr = np.asarray(list(bound), dtype=float)
         if arr.shape != (n,):
             raise ValueError(

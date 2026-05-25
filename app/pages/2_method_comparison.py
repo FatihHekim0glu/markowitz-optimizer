@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import sys
-from dataclasses import asdict
 from pathlib import Path
 
 import numpy as np
@@ -14,9 +13,9 @@ _APP_DIR = Path(__file__).resolve().parents[1]
 if str(_APP_DIR) not in sys.path:
     sys.path.insert(0, str(_APP_DIR))
 
-from components.plots import frontier_figure, weights_bar  # noqa: E402
-from components.sidebar import render_sidebar  # noqa: E402
-from components.theme import inject_css, register_plotly_template  # noqa: E402
+from components.plots import frontier_figure, weights_bar
+from components.sidebar import render_sidebar
+from components.theme import inject_css, register_plotly_template
 
 st.set_page_config(page_title="Method comparison", layout="wide")
 register_plotly_template()
@@ -184,7 +183,7 @@ st.dataframe(
 )
 
 tabs = st.tabs([row["method"] for row in rows])
-for tab, row in zip(tabs, rows):
+for tab, row in zip(tabs, rows, strict=False):
     with tab:
         label = row["method"]
         left, right = st.columns([3, 2], gap="large")

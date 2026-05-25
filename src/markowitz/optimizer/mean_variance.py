@@ -45,7 +45,7 @@ try:  # pragma: no cover - import guard, exercised only when cvxpy missing
     _CVXPY_AVAILABLE = True
     _CVXPY_IMPORT_ERROR: ImportError | None = None
 except ImportError as _exc:  # pragma: no cover
-    _cp = None  # type: ignore[assignment]
+    _cp = None
     _CVXPY_AVAILABLE = False
     _CVXPY_IMPORT_ERROR = _exc
 

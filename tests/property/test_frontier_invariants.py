@@ -9,6 +9,8 @@ parameter space without ever producing degenerate inputs.
 
 from __future__ import annotations
 
+import itertools
+
 import numpy as np
 import pytest
 from hypothesis import HealthCheck, assume, given, settings
@@ -130,11 +132,11 @@ def test_frontier_monotone_above_gmv(data: tuple[np.ndarray, np.ndarray]) -> Non
     variances = [f.efficient_return(float(m)).variance() for m in grid]
     # Variance is a strictly convex quadratic in mu_p centered at mu_gmv,
     # so above the vertex it must be non-decreasing.
-    for v_prev, v_next in zip(variances[:-1], variances[1:]):
+    for v_prev, v_next in itertools.pairwise(variances):
         assert v_next + 1e-10 >= v_prev
 
     grid_below = np.linspace(mu_gmv - 0.2, mu_gmv, 12)
     variances_below = [f.efficient_return(float(m)).variance() for m in grid_below]
     # Mirror image: below the vertex, variance is non-increasing.
-    for v_prev, v_next in zip(variances_below[:-1], variances_below[1:]):
+    for v_prev, v_next in itertools.pairwise(variances_below):
         assert v_next <= v_prev + 1e-10

@@ -59,7 +59,7 @@ else:
                 fh.write(f"# `{ident}`\n\n")
                 fh.write(f"::: {ident}\n")
             mkdocs_gen_files.set_edit_path(doc_path, path)
-        except Exception as exc:  # noqa: BLE001 - keep the build green
+        except Exception as exc:
             with mkdocs_gen_files.open(doc_path, "w") as fh:
                 fh.write(f"# `{ident}`\n\n")
                 fh.write(

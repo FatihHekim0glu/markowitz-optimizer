@@ -16,7 +16,6 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Union
 
 import numpy as np
 
@@ -50,7 +49,7 @@ class RelativeView:
     confidence: float | None = field(default=None)
 
 
-ViewSpec = Union[AbsoluteView, RelativeView]
+ViewSpec = AbsoluteView | RelativeView
 
 
 class Views:
@@ -88,11 +87,10 @@ class Views:
                 )
 
             c = view.confidence
-            if c is not None:
-                if not np.isfinite(c) or c < 0.0 or c > 1.0:
-                    raise ViewValidationError(
-                        f"View {k}: confidence must lie in [0, 1], got {c!r}."
-                    )
+            if c is not None and (not np.isfinite(c) or c < 0.0 or c > 1.0):
+                raise ViewValidationError(
+                    f"View {k}: confidence must lie in [0, 1], got {c!r}."
+                )
             confidences_seen.append(c is not None)
 
         if confidences_seen and any(confidences_seen) and not all(confidences_seen):

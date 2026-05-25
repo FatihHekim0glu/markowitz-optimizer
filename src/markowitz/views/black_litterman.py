@@ -232,10 +232,8 @@ class BlackLitterman:
         y_mat = cho_solve(c_factor, p_mat @ tau_sigma)  # K x N
         m_increment = tau_sigma - tausig_pt @ y_mat
 
-        if self._posterior_cov_mode == "full":
-            sigma_bl = sigma + m_increment
-        else:  # "prior_only"
-            sigma_bl = sigma
+        # "prior_only" returns sigma unchanged; "full" adds the covariance increment
+        sigma_bl = sigma + m_increment if self._posterior_cov_mode == "full" else sigma
 
         # Force symmetry against round-off.
         sigma_bl = 0.5 * (sigma_bl + sigma_bl.T)

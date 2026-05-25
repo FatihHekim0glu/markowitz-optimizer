@@ -14,14 +14,14 @@ _APP_DIR = Path(__file__).resolve().parents[1]
 if str(_APP_DIR) not in sys.path:
     sys.path.insert(0, str(_APP_DIR))
 
-from components.plots import frontier_figure, weights_bar  # noqa: E402
-from components.sidebar import SidebarConfig, render_sidebar  # noqa: E402
-from components.state import (  # noqa: E402
+from components.plots import frontier_figure, weights_bar
+from components.sidebar import SidebarConfig, render_sidebar
+from components.state import (
     SESSION_LAST_HASH,
     SESSION_RESULTS,
     config_hash,
 )
-from components.theme import inject_css, register_plotly_template  # noqa: E402
+from components.theme import inject_css, register_plotly_template
 
 st.set_page_config(page_title="Efficient frontier", layout="wide")
 register_plotly_template()

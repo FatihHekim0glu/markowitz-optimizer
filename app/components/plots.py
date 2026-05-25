@@ -18,7 +18,7 @@ def _empty(message: str) -> go.Figure:
         x=0.5,
         y=0.5,
         showarrow=False,
-        font=dict(color=PALETTE["grey"], size=13),
+        font={"color": PALETTE["grey"], "size": 13},
     )
     fig.update_xaxes(visible=False)
     fig.update_yaxes(visible=False)
@@ -40,8 +40,8 @@ def frontier_figure(frontier_df: pd.DataFrame) -> go.Figure:
             x=frontier_df["volatility"],
             y=frontier_df["expected_return"],
             mode="lines+markers",
-            line=dict(color=PALETTE["navy"], width=2.5),
-            marker=dict(size=5, color=PALETTE["navy"]),
+            line={"color": PALETTE["navy"], "width": 2.5},
+            marker={"size": 5, "color": PALETTE["navy"]},
             name="Efficient frontier",
             hovertemplate="vol=%{x:.3%}<br>ret=%{y:.3%}<extra></extra>",
         )
@@ -57,7 +57,7 @@ def frontier_figure(frontier_df: pd.DataFrame) -> go.Figure:
                     mode="markers+text",
                     text=[str(row["label"])],
                     textposition="top center",
-                    marker=dict(size=11, color=PALETTE["amber"], symbol="diamond"),
+                    marker={"size": 11, "color": PALETTE["amber"], "symbol": "diamond"},
                     showlegend=False,
                     hovertemplate=f"{row['label']}<br>vol=%{{x:.3%}}<br>ret=%{{y:.3%}}<extra></extra>",
                 )
@@ -65,8 +65,8 @@ def frontier_figure(frontier_df: pd.DataFrame) -> go.Figure:
 
     fig.update_layout(
         title="Efficient frontier",
-        xaxis=dict(title="Volatility (annualized)", tickformat=".1%"),
-        yaxis=dict(title="Expected return (annualized)", tickformat=".1%"),
+        xaxis={"title": "Volatility (annualized)", "tickformat": ".1%"},
+        yaxis={"title": "Expected return (annualized)", "tickformat": ".1%"},
         height=460,
     )
     return fig
@@ -77,10 +77,7 @@ def weights_bar(weights: pd.Series | pd.DataFrame, top_n: int = 12) -> go.Figure
     if weights is None or len(weights) == 0:
         return _empty("No weights to display.")
 
-    if isinstance(weights, pd.DataFrame):
-        series = weights.iloc[:, 0]
-    else:
-        series = weights
+    series = weights.iloc[:, 0] if isinstance(weights, pd.DataFrame) else weights
 
     series = series.dropna().sort_values(ascending=True)
     if top_n is not None and len(series) > top_n:
@@ -94,14 +91,14 @@ def weights_bar(weights: pd.Series | pd.DataFrame, top_n: int = 12) -> go.Figure
             x=series.values,
             y=series.index.astype(str),
             orientation="h",
-            marker=dict(color=colors),
+            marker={"color": colors},
             hovertemplate="%{y}: %{x:.2%}<extra></extra>",
         )
     )
     fig.update_layout(
         title="Portfolio weights",
-        xaxis=dict(title="Weight", tickformat=".0%"),
-        yaxis=dict(title=""),
+        xaxis={"title": "Weight", "tickformat": ".0%"},
+        yaxis={"title": ""},
         height=max(280, 22 * len(series) + 120),
     )
     return fig
@@ -120,14 +117,14 @@ def equity_curves(equity_df: pd.DataFrame) -> go.Figure:
                 y=equity_df[col],
                 mode="lines",
                 name=str(col),
-                line=dict(width=2),
+                line={"width": 2},
                 hovertemplate="%{x|%Y-%m-%d}<br>%{y:.3f}<extra>" + str(col) + "</extra>",
             )
         )
     fig.update_layout(
         title="Equity curves (growth of 1)",
-        xaxis=dict(title="Date"),
-        yaxis=dict(title="Value", tickformat=".2f"),
+        xaxis={"title": "Date"},
+        yaxis={"title": "Value", "tickformat": ".2f"},
         height=420,
         hovermode="x unified",
     )
@@ -151,14 +148,14 @@ def drawdown(equity_df: pd.DataFrame) -> go.Figure:
                 mode="lines",
                 name=str(col),
                 fill="tozeroy",
-                line=dict(width=1.5),
+                line={"width": 1.5},
                 hovertemplate="%{x|%Y-%m-%d}<br>%{y:.2%}<extra>" + str(col) + "</extra>",
             )
         )
     fig.update_layout(
         title="Drawdown",
-        xaxis=dict(title="Date"),
-        yaxis=dict(title="Drawdown", tickformat=".0%"),
+        xaxis={"title": "Date"},
+        yaxis={"title": "Drawdown", "tickformat": ".0%"},
         height=320,
         hovermode="x unified",
     )
@@ -184,13 +181,13 @@ def corr_heatmap(corr_df: pd.DataFrame) -> go.Figure:
                 [0.5, "#F5F6F8"],
                 [1.0, PALETTE["navy"]],
             ],
-            colorbar=dict(title="ρ", tickformat=".1f"),
+            colorbar={"title": "ρ", "tickformat": ".1f"},
             hovertemplate="%{x} × %{y}: %{z:.2f}<extra></extra>",
         )
     )
     fig.update_layout(
         title="Correlation",
         height=max(360, 26 * len(labels) + 120),
-        xaxis=dict(tickangle=-45),
+        xaxis={"tickangle": -45},
     )
     return fig

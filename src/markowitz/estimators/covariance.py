@@ -251,10 +251,7 @@ class EWMACovariance(_BaseCov):
                 f"resolved lambda must lie in (0, 1); got {lam}"
             )
 
-        if self.burn_in == "auto":
-            burn = max(n_assets + 1, 20)
-        else:
-            burn = int(self.burn_in)
+        burn = max(n_assets + 1, 20) if self.burn_in == "auto" else int(self.burn_in)
         burn = min(burn, n_obs)
         if burn < 2:
             burn = min(2, n_obs)

@@ -151,8 +151,46 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["PLR2004", "S101", "PD901"]
+"tests/**/*.py" = [
+    "PLR2004",  # magic numbers fine in test fixtures
+    "S101",     # assert is the point of tests
+    "PD901",    # df name OK
+    "N802",     # test_variance_equals_one_over_A style names
+    "N816",     # ASSETS, COV, PI_PAPER math constants
+    "B017",     # assert raises Exception OK in tests
+    "B904",     # raise-without-from acceptable in test exception handling
+    "PLC0415",  # imports inside test functions for lazy fixture loading
+    "PLR0124",  # comparison with itself in hypothesis tests
+    "PLR0911",  # many returns in helper assertions
+    "UP007",    # PEP-604 unions: tolerate Union[] in older tests
+    "SIM108",   # if-else clearer than ternary in tests
+]
 "tools/**/*.py" = ["T201"]
+"app/**/*.py" = [
+    "PD011",    # .values is fast-path and intentional in app
+    "PD008",    # .at scalar writes intentional
+    "PLC0415",  # function-local imports gate optional dependencies
+    "E402",     # post-sys.path-setup imports in multipage Streamlit
+    "E501",     # long lines acceptable in markdown strings
+    "B905",     # zip strict not relevant for dashboard code
+    "RUF001",   # Greek symbols (rho, sigma) and × are finance UI
+    "RUF007",   # itertools.pairwise not always cleaner
+    "SIM108",   # ternary vs if-else preference
+    "PLR0124",
+    "PLR0911",
+    "UP007",
+    "N816",
+]
+"src/markowitz/estimators/**/*.py" = [
+    "PLC0415",  # cvxpy / sklearn imports inside fit() guard the optional dep
+    "PLR0911",  # dispatch / routing functions exceed default return cap
+]
+"src/markowitz/backtest/**/*.py" = [
+    "PD008",    # .at scalar writes in hot-path walk-forward inner loop
+]
+"src/markowitz/optimizer/**/*.py" = [
+    "PLR0124",  # v == v is the canonical NaN-check idiom
+]
 
 [tool.ruff.lint.isort]
 known-first-party = ["markowitz"]

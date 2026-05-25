@@ -67,7 +67,7 @@ def solve_problem(
     options = dict(solver_options or {})
     try:
         problem.solve(solver=solver, **options)
-    except Exception as exc:  # noqa: BLE001 - third-party solver, any failure mode
+    except Exception as exc:
         raise SolverError(
             f"Solver {solver!r} raised an exception: {exc}",
             solver_status="solver_error",

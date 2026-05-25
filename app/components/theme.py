@@ -32,57 +32,57 @@ def register_plotly_template(name: str = "fund") -> None:
     """Register the 'fund' Plotly template and make it the default."""
     template = go.layout.Template(
         layout=go.Layout(
-            font=dict(family="Inter, system-ui, sans-serif", size=13, color="#1A1A1A"),
-            title=dict(
-                font=dict(family="Inter, system-ui, sans-serif", size=18, color=PALETTE["navy"]),
-                x=0.0,
-                xanchor="left",
-            ),
+            font={"family": "Inter, system-ui, sans-serif", "size": 13, "color": "#1A1A1A"},
+            title={
+                "font": {"family": "Inter, system-ui, sans-serif", "size": 18, "color": PALETTE["navy"]},
+                "x": 0.0,
+                "xanchor": "left",
+            },
             colorway=PALETTE_ORDER,
             plot_bgcolor="#FFFFFF",
             paper_bgcolor="#FFFFFF",
-            margin=dict(l=56, r=24, t=56, b=48),
-            xaxis=dict(
-                showgrid=True,
-                gridcolor="#ECEEF1",
-                zeroline=False,
-                ticks="outside",
-                tickcolor="#C8CCD2",
-                linecolor="#C8CCD2",
-                tickfont=dict(family="JetBrains Mono, monospace", size=11),
-            ),
-            yaxis=dict(
-                showgrid=True,
-                gridcolor="#ECEEF1",
-                zeroline=False,
-                ticks="outside",
-                tickcolor="#C8CCD2",
-                linecolor="#C8CCD2",
-                tickfont=dict(family="JetBrains Mono, monospace", size=11),
-            ),
-            legend=dict(
-                bgcolor="rgba(255,255,255,0.85)",
-                bordercolor="#ECEEF1",
-                borderwidth=1,
-                font=dict(size=11),
-            ),
-            hoverlabel=dict(
-                bgcolor="#FFFFFF",
-                bordercolor=PALETTE["navy"],
-                font=dict(family="Inter, system-ui, sans-serif", size=12),
-            ),
-            colorscale=dict(
-                sequential=[
+            margin={"l": 56, "r": 24, "t": 56, "b": 48},
+            xaxis={
+                "showgrid": True,
+                "gridcolor": "#ECEEF1",
+                "zeroline": False,
+                "ticks": "outside",
+                "tickcolor": "#C8CCD2",
+                "linecolor": "#C8CCD2",
+                "tickfont": {"family": "JetBrains Mono, monospace", "size": 11},
+            },
+            yaxis={
+                "showgrid": True,
+                "gridcolor": "#ECEEF1",
+                "zeroline": False,
+                "ticks": "outside",
+                "tickcolor": "#C8CCD2",
+                "linecolor": "#C8CCD2",
+                "tickfont": {"family": "JetBrains Mono, monospace", "size": 11},
+            },
+            legend={
+                "bgcolor": "rgba(255,255,255,0.85)",
+                "bordercolor": "#ECEEF1",
+                "borderwidth": 1,
+                "font": {"size": 11},
+            },
+            hoverlabel={
+                "bgcolor": "#FFFFFF",
+                "bordercolor": PALETTE["navy"],
+                "font": {"family": "Inter, system-ui, sans-serif", "size": 12},
+            },
+            colorscale={
+                "sequential": [
                     [0.0, "#F5F6F8"],
                     [0.5, PALETTE["slate_blue"]],
                     [1.0, PALETTE["navy"]],
                 ],
-                diverging=[
+                "diverging": [
                     [0.0, PALETTE["crimson"]],
                     [0.5, "#F5F6F8"],
                     [1.0, PALETTE["navy"]],
                 ],
-            ),
+            },
         )
     )
     pio.templates[name] = template

@@ -8,6 +8,8 @@ import pytest
 
 pytest.importorskip("cvxpy")
 
+import itertools
+
 from markowitz.core import AnalyticFrontier
 from markowitz.optimizer import (
     CustomConstraint,
@@ -204,7 +206,7 @@ class TestEfficientFrontier:
             assert float(mu @ w) >= float(t) - 1e-6
             variances.append(float(w @ sigma @ w))
         # Variance should be monotone non-decreasing in target return.
-        for a, b in zip(variances, variances[1:]):
+        for a, b in itertools.pairwise(variances):
             assert b >= a - 1e-8
 
     def test_efficient_risk_caps_volatility(
@@ -263,7 +265,7 @@ class TestReportingAndFailures:
         mu, sigma = small_problem
         opt = MeanVariance(mu, sigma)
         w = pd.Series(1 / len(mu), index=mu.index)
-        ret, vol, sharpe = opt.portfolio_performance(w, risk_free_rate=0.0)
+        _ret, vol, _sharpe = opt.portfolio_performance(w, risk_free_rate=0.0)
         assert vol > 0
 
     def test_max_quadratic_utility_negative_lambda_rejected(

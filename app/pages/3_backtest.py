@@ -13,22 +13,20 @@ _APP_DIR = Path(__file__).resolve().parents[1]
 if str(_APP_DIR) not in sys.path:
     sys.path.insert(0, str(_APP_DIR))
 
-from components.plots import drawdown, equity_curves  # noqa: E402
-from components.sidebar import render_sidebar  # noqa: E402
-from components.theme import inject_css, register_plotly_template  # noqa: E402
+from components.plots import drawdown, equity_curves
+from components.sidebar import render_sidebar
+from components.theme import inject_css, register_plotly_template
 
 st.set_page_config(page_title="Backtest", layout="wide")
 register_plotly_template()
 inject_css()
 
-try:
-    from markowitz.backtest import WalkForwardBacktest  # type: ignore
+import importlib.util as _ilu
 
-    HAS_BACKTEST = True
-    _import_error: str | None = None
-except Exception as exc:
-    HAS_BACKTEST = False
-    _import_error = str(exc)
+HAS_BACKTEST = _ilu.find_spec("markowitz.backtest") is not None
+_import_error: str | None = (
+    None if HAS_BACKTEST else "markowitz.backtest not importable"
+)
 
 
 @st.cache_data(show_spinner=False)
@@ -80,10 +78,7 @@ def _fallback_backtest(
                 mu = window.mean().values
                 cov = window.cov().values + 1e-6 * np.eye(returns.shape[1])
                 raw = np.linalg.pinv(cov) @ mu
-                if raw.sum() == 0:
-                    w = prev_w
-                else:
-                    w = raw / raw.sum()
+                w = prev_w if raw.sum() == 0 else raw / raw.sum()
                 if long_only:
                     w = np.clip(w, 0.0, None)
                 w = np.minimum(w, max_weight)

@@ -14,9 +14,9 @@ _APP_DIR = Path(__file__).resolve().parents[1]
 if str(_APP_DIR) not in sys.path:
     sys.path.insert(0, str(_APP_DIR))
 
-from components.plots import corr_heatmap  # noqa: E402
-from components.sidebar import render_sidebar  # noqa: E402
-from components.theme import PALETTE, inject_css, register_plotly_template  # noqa: E402
+from components.plots import corr_heatmap
+from components.sidebar import render_sidebar
+from components.theme import PALETTE, inject_css, register_plotly_template
 
 st.set_page_config(page_title="Diagnostics", layout="wide")
 register_plotly_template()
@@ -68,14 +68,14 @@ def _return_distribution(returns: pd.DataFrame) -> go.Figure:
                 name=str(col),
                 opacity=0.55,
                 nbinsx=60,
-                marker=dict(color=palette_cycle[i % len(palette_cycle)]),
+                marker={"color": palette_cycle[i % len(palette_cycle)]},
             )
         )
     fig.update_layout(
         barmode="overlay",
         title="Daily return distribution",
-        xaxis=dict(title="Daily return", tickformat=".1%"),
-        yaxis=dict(title="Count"),
+        xaxis={"title": "Daily return", "tickformat": ".1%"},
+        yaxis={"title": "Count"},
         height=420,
     )
     return fig
@@ -147,12 +147,12 @@ with tab_cov:
         go.Bar(
             x=[f"λ{i+1}" for i in range(len(eigvals))],
             y=np.sort(eigvals)[::-1],
-            marker=dict(color=PALETTE["navy"]),
+            marker={"color": PALETTE["navy"]},
         )
     )
     eig_fig.update_layout(
         title="Sorted eigenvalues of Σ",
-        yaxis=dict(type="log", title="Eigenvalue (log)"),
+        yaxis={"type": "log", "title": "Eigenvalue (log)"},
         height=360,
     )
     st.plotly_chart(eig_fig, use_container_width=True)
