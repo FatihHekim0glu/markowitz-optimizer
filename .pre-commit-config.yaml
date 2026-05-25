@@ -1,0 +1,52 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: \.md$
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: debug-statements
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.0
+    hooks:
+      - id: ruff
+        args: ["--fix", "--exit-non-zero-on-fix"]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.10.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - numpy>=1.26
+          - pandas-stubs
+          - types-PyYAML
+        args: ["--config-file=pyproject.toml"]
+        files: ^src/markowitz/
+        exclude: ^src/markowitz/_version\.py$
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+        args: ["--ignore-words=codespell-ignore.txt"]
+        exclude: "uv\\.lock$|\\.svg$"
+
+  - repo: local
+    hooks:
+      - id: no-ai-attribution
+        name: no-ai-attribution
+        entry: python tools/check_no_ai_attribution.py
+        language: system
+        pass_filenames: true
+        types_or: [python, markdown, rst, text, toml, yaml, json, html, css, javascript, shell]

@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+title: markowitz-optimizer
+message: "If you use this software in academic work, please cite it as below."
+type: software
+authors:
+  - family-names: Hekimoglu
+    given-names: Fatih
+    email: fatih.hekim1@hotmail.com
+abstract: >-
+  A from-scratch, research-grade Python toolkit for mean-variance portfolio
+  optimization. Implements the closed-form efficient frontier, numerical
+  optimizer with linear and box constraints, Ledoit-Wolf and Oracle
+  Approximating Shrinkage covariance estimators, the Black-Litterman posterior
+  in Theil mixed-estimation form, the Idzorek (2005) confidence mapping, and a
+  walk-forward backtest engine with proportional transaction costs. Validated
+  against PyPortfolioOpt, scikit-learn, and the He-Litterman (1999) tabulated
+  results.
+keywords:
+  - portfolio-optimization
+  - quantitative-finance
+  - mean-variance
+  - black-litterman
+  - ledoit-wolf
+license: MIT
+version: 0.1.0
+date-released: "2026-05-23"
+repository-code: "https://github.com/FatihHekim0glu/markowitz-optimizer"
+url: "https://FatihHekim0glu.github.io/markowitz-optimizer"
+preferred-citation:
+  type: software
+  title: markowitz-optimizer
+  authors:
+    - family-names: Hekimoglu
+      given-names: Fatih
+      email: fatih.hekim1@hotmail.com
+  version: 0.1.0
+  year: 2026
+  url: "https://github.com/FatihHekim0glu/markowitz-optimizer"

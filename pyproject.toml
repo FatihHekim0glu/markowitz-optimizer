@@ -1,0 +1,274 @@
+[build-system]
+requires = ["hatchling>=1.21", "hatch-vcs>=0.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "markowitz-optimizer"
+dynamic = ["version"]
+description = "Modern portfolio theory toolkit: mean-variance optimization, shrinkage covariance, Black-Litterman, and backtesting."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Fatih Hekimoglu", email = "fatih.hekim1@hotmail.com" },
+]
+keywords = [
+    "portfolio-optimization",
+    "markowitz",
+    "mean-variance",
+    "black-litterman",
+    "quantitative-finance",
+    "risk-parity",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Typing :: Typed",
+]
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "scipy>=1.11",
+    "scikit-learn>=1.4",
+]
+
+[project.optional-dependencies]
+data = [
+    "yfinance>=0.2.40",
+    "fredapi>=0.5",
+    "pyarrow>=15.0",
+]
+viz = [
+    "plotly>=5.20",
+    "matplotlib>=3.8",
+]
+robust = [
+    "cvxpy>=1.5,<2.0",
+]
+app = [
+    "streamlit>=1.35",
+]
+test = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "pytest-xdist>=3.5",
+    "hypothesis>=6.100",
+    "PyPortfolioOpt>=1.5.5",
+    "pandas-market-calendars>=4.4",
+    "nbformat>=5.9",
+]
+docs = [
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.25",
+    "mkdocs-jupyter>=0.24",
+    "mkdocs-gen-files>=0.5",
+    "mkdocs-literate-nav>=0.6",
+]
+dev = [
+    "pre-commit>=3.7",
+    "ruff==0.15.0",
+    "mypy>=1.10",
+    "pandas-stubs",
+    "build>=1.2",
+    "twine>=5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/FatihHekim0glu/markowitz-optimizer"
+Documentation = "https://FatihHekim0glu.github.io/markowitz-optimizer"
+Repository = "https://github.com/FatihHekim0glu/markowitz-optimizer"
+Issues = "https://github.com/FatihHekim0glu/markowitz-optimizer/issues"
+Changelog = "https://github.com/FatihHekim0glu/markowitz-optimizer/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/markowitz/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/markowitz"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/tools",
+    "/README.md",
+    "/LICENSE",
+    "/CHANGELOG.md",
+    "/pyproject.toml",
+]
+
+# ---------------------------------------------------------------------------
+# Ruff
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests", "tools"]
+extend-exclude = [
+    ".venv",
+    "build",
+    "dist",
+    "docs/_build",
+    "src/markowitz/_version.py",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+    "PL",   # pylint
+    "RUF",  # ruff
+    "NPY",  # numpy-specific
+    "PD",   # pandas-vet
+]
+ignore = [
+    "N803",   # argument name should be lowercase (Sigma, mu allowed)
+    "N806",   # variable in function should be lowercase
+    "PLR0913", # too many arguments
+    "PLR2004", # magic value comparison
+    "PLR0912", # too many branches
+    "PLR0915", # too many statements
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["PLR2004", "S101", "PD901"]
+"tools/**/*.py" = ["T201"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["markowitz"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+# ---------------------------------------------------------------------------
+# Mypy
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+files = ["src/markowitz"]
+exclude = ["src/markowitz/_version.py"]
+
+# cvxpy ships partial stubs; skip following them so attribute access is Any.
+# This silences the upstream-stub "Module has no attribute" errors for
+# cp.sum / cp.quad_form / cp.psd_wrap / cp.multiply / cp.norm etc.
+[[tool.mypy.overrides]]
+module = ["cvxpy", "cvxpy.*"]
+follow_imports = "skip"
+ignore_missing_imports = true
+disable_error_code = ["attr-defined", "no-untyped-call", "arg-type"]
+
+# Third-party deps without complete type stubs.  Includes deps actively
+# imported by src (scipy, sklearn) and optional/future-use deps kept so
+# that adding imports later does not require touching mypy config.
+[[tool.mypy.overrides]]
+module = [
+    "scipy",
+    "scipy.*",
+    "sklearn",
+    "sklearn.*",
+    "yfinance",
+    "yfinance.*",
+    "fredapi",
+    "fredapi.*",
+    "pandas_datareader",
+    "pandas_datareader.*",
+    "pandas_market_calendars",
+    "pandas_market_calendars.*",
+    "kaleido",
+    "kaleido.*",
+    "pypfopt",
+    "pypfopt.*",
+    "plotly",
+    "plotly.*",
+    "streamlit",
+    "streamlit.*",
+    "matplotlib",
+    "matplotlib.*",
+]
+ignore_missing_imports = true
+
+# ---------------------------------------------------------------------------
+# Pytest
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--showlocals",
+]
+markers = [
+    "unit: fast isolated unit tests",
+    "parity: parity tests against reference implementations (PyPortfolioOpt)",
+    "regression: regression tests against pinned numerical snapshots",
+    "property: hypothesis-based property tests",
+    "integration: cross-module integration tests",
+    "network: tests that require network access (excluded from default CI)",
+    "slow: long-running tests (excluded from default CI)",
+]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning:pkg_resources.*",
+    "ignore::DeprecationWarning:pypfopt.*",
+    "ignore::PendingDeprecationWarning",
+]
+
+# ---------------------------------------------------------------------------
+# Coverage
+# ---------------------------------------------------------------------------
+[tool.coverage.run]
+branch = true
+source = ["src/markowitz"]
+omit = [
+    "src/markowitz/_version.py",
+    "src/markowitz/**/__init__.py",
+]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+    "\\.\\.\\.",
+]
+
+[tool.coverage.paths]
+source = ["src/markowitz", "*/site-packages/markowitz"]

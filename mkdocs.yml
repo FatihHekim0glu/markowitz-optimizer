@@ -1,0 +1,97 @@
+site_name: markowitz-optimizer
+site_description: >-
+  A research-grade mean-variance and robust portfolio optimizer.
+site_url: https://FatihHekim0glu.github.io/markowitz-optimizer/
+repo_url: https://github.com/FatihHekim0glu/markowitz-optimizer
+repo_name: FatihHekim0glu/markowitz-optimizer
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: deep orange
+      toggle: { icon: material/weather-night, name: Switch to dark mode }
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: deep orange
+      toggle: { icon: material/weather-sunny, name: Switch to light mode }
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - toc: { permalink: true }
+  - pymdownx.arithmatex: { generic: true }
+  - pymdownx.highlight: { anchor_linenums: true }
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.tabbed: { alternate_style: true }
+  - pymdownx.snippets
+
+extra_javascript:
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+plugins:
+  - search
+  - gen-files:
+      scripts: [docs/gen_ref_pages.py]
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: numpy
+            show_source: true
+            show_root_heading: true
+            show_signature_annotations: true
+            merge_init_into_class: true
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Theory:
+      - Mean-Variance: theory/mean-variance.md
+      - Estimation Error: theory/estimation-error.md
+      - Shrinkage: theory/shrinkage.md
+      - Black-Litterman: theory/black-litterman.md
+      - Robust & CVaR: theory/robust-cvar.md
+  - Tutorials: tutorials.md
+  - Validation:
+      - He-Litterman (1999): validation/he-litterman-1999.md
+      - DeMiguel et al. (2009): validation/demiguel-2009.md
+      - sklearn LedoitWolf Parity: validation/sklearn-ledoit-wolf-parity.md
+  - Decisions:
+      - "ADR-0001 Closed-form bedrock": decisions/0001-closed-form-bedrock.md
+      - "ADR-0002 cvxpy + CLARABEL default": decisions/0002-cvxpy-clarabel-default.md
+      - "ADR-0003 Cornuejols-Tütüncü max-Sharpe": decisions/0003-cornuejols-tutuncu-max-sharpe.md
+      - "ADR-0004 Ledoit-Wolf identity target": decisions/0004-ledoit-wolf-identity-target.md
+      - "ADR-0005 Theil form for BL posterior": decisions/0005-theil-form-bl-posterior.md
+      - "ADR-0006 tau = 0.05 (He-Litterman)": decisions/0006-tau-005-he-litterman.md
+      - "ADR-0007 Walk-forward monthly": decisions/0007-walk-forward-monthly.md
+      - "ADR-0008 Simple returns": decisions/0008-simple-returns.md
+      - "ADR-0009 yfinance + Tiingo fallback": decisions/0009-yfinance-fallback.md
+      - "ADR-0010 Hatchling build": decisions/0010-hatchling-build.md
+  - Future Work: future-work.md
+  - API Reference: api-reference/
+  - Changelog: changelog.md
+  - Citations: citations.md

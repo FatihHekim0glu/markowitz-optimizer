@@ -1,0 +1,44 @@
+# Default behavior: normalize text files to LF on commit
+* text=auto eol=lf
+
+# Source
+*.py    text eol=lf diff=python
+*.pyi   text eol=lf diff=python
+*.toml  text eol=lf
+*.cfg   text eol=lf
+*.ini   text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.rst   text eol=lf
+*.txt   text eol=lf
+*.sh    text eol=lf
+*.ps1   text eol=crlf
+
+# Notebooks (treat as text, do not normalize EOL aggressively)
+*.ipynb text eol=lf
+
+# Binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.zip   binary
+*.gz    binary
+*.bz2   binary
+*.xz    binary
+*.tar   binary
+*.parquet binary
+*.feather binary
+*.pkl   binary
+*.joblib binary
+*.whl   binary
+
+# GitHub linguist hints
+docs/**       linguist-documentation
+tests/**      linguist-detectable
+src/**        linguist-detectable
+*.ipynb       linguist-documentation
