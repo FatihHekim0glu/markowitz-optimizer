@@ -15,7 +15,7 @@ import urllib.error
 import urllib.request
 import zipfile
 from pathlib import Path
-from typing import Final, cast
+from typing import Final
 
 import pandas as pd
 
@@ -89,7 +89,8 @@ def _parse_french_csv(text: str, *, frequency: str) -> pd.DataFrame:
     frame = pd.DataFrame(data, index=pd.DatetimeIndex(dates))
     frame = frame / 100.0
     frame.index.name = "date"
-    return cast(pd.DataFrame, frame)
+    assert isinstance(frame, pd.DataFrame)
+    return frame
 
 
 def load_french_factors(

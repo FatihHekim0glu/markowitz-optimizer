@@ -86,11 +86,12 @@ def load_prices(
         frames[tkr] = series
 
     combined = pd.concat(frames, axis=1)
-    combined.columns = list(frames.keys())
+    combined.columns = pd.Index(list(frames.keys()))
     combined = combined.sort_index()
     if combined.index.has_duplicates:
-        combined = combined[~combined.index.duplicated(keep="last")]
-    return cast(pd.DataFrame, combined)
+        combined = combined.loc[~combined.index.duplicated(keep="last")]
+    assert isinstance(combined, pd.DataFrame)
+    return combined
 
 
 def compute_returns(

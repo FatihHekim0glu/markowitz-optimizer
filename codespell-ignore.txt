@@ -11,3 +11,5 @@ arange
 inout
 falsy
 froms
+fro
+strat
