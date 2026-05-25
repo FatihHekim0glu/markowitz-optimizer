@@ -83,9 +83,7 @@ class EWMAMean(_BaseMean):
         periods_per_year: int | None = None,
     ) -> None:
         if (halflife_years is None) == (lam is None):
-            raise EstimatorConfigError(
-                "Exactly one of halflife_years or lam must be provided."
-            )
+            raise EstimatorConfigError("Exactly one of halflife_years or lam must be provided.")
         self.halflife_years = halflife_years
         self.lam = lam
         self.annualize = bool(annualize)

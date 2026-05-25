@@ -58,9 +58,7 @@ def _safe_inv(matrix: np.ndarray) -> np.ndarray:
         return np.asarray(np.linalg.solve(matrix, np.eye(n)), dtype=float)
     except np.linalg.LinAlgError:
         ridge = 1e-8 * float(np.trace(matrix)) / max(n, 1)
-        return np.asarray(
-            np.linalg.solve(matrix + ridge * np.eye(n), np.eye(n)), dtype=float
-        )
+        return np.asarray(np.linalg.solve(matrix + ridge * np.eye(n), np.eye(n)), dtype=float)
 
 
 # ---------------------------------------------------------------------------
@@ -153,9 +151,7 @@ class RiskParity:
                 # Solve for x_i: sigma_ii * x_i^2 + (sigma_i,-i . x_-i) * x_i - b_i = 0
                 a = float(sigma[i, i])
                 if a <= 0.0 or not np.isfinite(a):
-                    raise DegenerateWindowError(
-                        "risk parity encountered a non-positive diagonal"
-                    )
+                    raise DegenerateWindowError("risk parity encountered a non-positive diagonal")
                 # Off-diagonal contribution using current x (Gauss-Seidel sweep).
                 off = float(sigma[i] @ x) - a * x[i]
                 disc = off * off + 4.0 * a * b[i]

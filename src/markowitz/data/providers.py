@@ -112,9 +112,7 @@ class YFinanceProvider:
             msg = str(exc).lower()
             if "rate" in msg and "limit" in msg:
                 raise RateLimitError(f"yfinance rate-limited on {ticker}") from exc
-            raise ProviderUnavailableError(
-                f"yfinance failed to fetch {ticker}: {exc}"
-            ) from exc
+            raise ProviderUnavailableError(f"yfinance failed to fetch {ticker}: {exc}") from exc
 
         if raw is None or raw.empty:
             raise EmptyDataError(f"yfinance returned no data for {ticker}")
@@ -125,9 +123,7 @@ class YFinanceProvider:
             raw.columns = raw.columns.get_level_values(0)
 
         if "Close" not in raw.columns:
-            raise DataIntegrityError(
-                f"yfinance response for {ticker} missing 'Close' column"
-            )
+            raise DataIntegrityError(f"yfinance response for {ticker} missing 'Close' column")
         frame = pd.DataFrame({"close": raw["Close"]})
         return _normalize_frame(frame, ticker=ticker)
 
@@ -155,9 +151,7 @@ class CachedProvider:
             covered_start = cached.index.min()
             covered_end = cached.index.max()
             if covered_start <= start_ts and covered_end >= end_ts - pd.Timedelta(days=1):
-                sliced = cached.loc[
-                    (cached.index >= start_ts) & (cached.index < end_ts)
-                ].copy()
+                sliced = cached.loc[(cached.index >= start_ts) & (cached.index < end_ts)].copy()
                 return cast(pd.DataFrame, sliced)
 
         fresh = self._inner.fetch(ticker, start, end, frequency=frequency)

@@ -62,8 +62,7 @@ def coerce_returns(
     if isinstance(returns, pd.DataFrame):
         if returns.shape[0] < 2:
             raise DimensionMismatchError(
-                "returns must have at least 2 rows (T >= 2); "
-                f"got shape {returns.shape}"
+                f"returns must have at least 2 rows (T >= 2); got shape {returns.shape}"
             )
         values = np.ascontiguousarray(returns.to_numpy(dtype=np.float64))
         feature_names = np.asarray(returns.columns, dtype=object)
@@ -72,9 +71,7 @@ def coerce_returns(
 
     arr = np.asarray(returns, dtype=np.float64)
     if arr.ndim != 2:
-        raise DimensionMismatchError(
-            f"returns must be a 2D array; got shape {arr.shape}"
-        )
+        raise DimensionMismatchError(f"returns must be a 2D array; got shape {arr.shape}")
     if arr.shape[0] < 2:
         raise DimensionMismatchError(
             f"returns must have at least 2 rows (T >= 2); got shape {arr.shape}"
@@ -92,9 +89,7 @@ def infer_periods_per_year(
     """Return the periods-per-year, preferring an explicit user value."""
     if user_ppy is not None:
         if user_ppy <= 0:
-            raise EstimatorConfigError(
-                f"periods_per_year must be positive; got {user_ppy}"
-            )
+            raise EstimatorConfigError(f"periods_per_year must be positive; got {user_ppy}")
         return int(user_ppy)
 
     if isinstance(index, pd.DatetimeIndex):
@@ -152,9 +147,7 @@ def check_fitted(obj: object, attrs: tuple[str, ...]) -> None:
 def ewma_weights(n: int, lam: float) -> np.ndarray:
     """Return normalized EWMA weights w_i = (1-λ)·λ^(n-1-i), summing to 1."""
     if not 0.0 < lam < 1.0:
-        raise EstimatorConfigError(
-            f"lam must lie strictly in (0, 1); got {lam}"
-        )
+        raise EstimatorConfigError(f"lam must lie strictly in (0, 1); got {lam}")
     ages = np.arange(n - 1, -1, -1, dtype=np.float64)
     raw = (1.0 - lam) * np.power(lam, ages)
     total = raw.sum()
@@ -168,9 +161,7 @@ def ewma_weights(n: int, lam: float) -> np.ndarray:
 def halflife_to_lambda(halflife_periods: float) -> float:
     """Convert a half-life in periods to the corresponding EWMA decay λ."""
     if halflife_periods <= 0.0:
-        raise EstimatorConfigError(
-            f"halflife must be positive; got {halflife_periods}"
-        )
+        raise EstimatorConfigError(f"halflife must be positive; got {halflife_periods}")
     return float(np.power(0.5, 1.0 / halflife_periods))
 
 
@@ -191,13 +182,9 @@ def resolve_decay(
     has_lam = lam is not None
     if require_xor:
         if has_hl == has_lam:
-            raise EstimatorConfigError(
-                "Exactly one of halflife_years or lam must be provided."
-            )
+            raise EstimatorConfigError("Exactly one of halflife_years or lam must be provided.")
     elif has_hl and has_lam:
-        raise EstimatorConfigError(
-            "Provide at most one of halflife_years or lam, not both."
-        )
+        raise EstimatorConfigError("Provide at most one of halflife_years or lam, not both.")
 
     if has_hl:
         if halflife_years is None:  # pragma: no cover - defensive type narrowing
@@ -208,9 +195,7 @@ def resolve_decay(
         return float(lam)  # type: ignore[arg-type]
     if default_lam is not None:
         return float(default_lam)
-    raise EstimatorConfigError(
-        "Neither halflife_years nor lam was provided."
-    )
+    raise EstimatorConfigError("Neither halflife_years nor lam was provided.")
 
 
 def symmetrize(matrix: np.ndarray) -> np.ndarray:

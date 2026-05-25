@@ -32,9 +32,7 @@ except Exception as exc:
 
 
 @st.cache_data(show_spinner=False)
-def _synthetic_returns(
-    tickers: tuple[str, ...], seed: int, n_days: int = 1260
-) -> pd.DataFrame:
+def _synthetic_returns(tickers: tuple[str, ...], seed: int, n_days: int = 1260) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     n = len(tickers)
     drifts = rng.uniform(0.05, 0.14, size=n) / 252.0
@@ -117,14 +115,27 @@ with st.form("bl_views"):
     for tkr in cfg.tickers[: min(n, 6)]:
         c1, c2, c3 = st.columns([2, 1, 1])
         with c1:
-            st.text_input("asset", value=tkr, key=f"bl_a_{tkr}", disabled=True, label_visibility="collapsed")
+            st.text_input(
+                "asset", value=tkr, key=f"bl_a_{tkr}", disabled=True, label_visibility="collapsed"
+            )
         with c2:
             q = st.number_input(
-                "q", value=0.0, step=0.01, format="%.3f", key=f"bl_q_{tkr}", label_visibility="collapsed"
+                "q",
+                value=0.0,
+                step=0.01,
+                format="%.3f",
+                key=f"bl_q_{tkr}",
+                label_visibility="collapsed",
             )
         with c3:
             s = st.number_input(
-                "s", value=0.05, min_value=0.005, step=0.005, format="%.3f", key=f"bl_s_{tkr}", label_visibility="collapsed"
+                "s",
+                value=0.05,
+                min_value=0.005,
+                step=0.005,
+                format="%.3f",
+                key=f"bl_s_{tkr}",
+                label_visibility="collapsed",
             )
         if abs(q) > 1e-9:
             view_data.append((tkr, float(q), float(s)))
@@ -176,9 +187,7 @@ post = st.session_state["bl_posterior"]
 left, right = st.columns(2, gap="large")
 with left:
     st.markdown("#### Posterior returns")
-    df_compare = pd.DataFrame(
-        {"prior": prior_series, "posterior": post["mu"]}
-    )
+    df_compare = pd.DataFrame({"prior": prior_series, "posterior": post["mu"]})
     df_compare["delta"] = df_compare["posterior"] - df_compare["prior"]
     st.dataframe(
         df_compare.style.format("{:.2%}"),

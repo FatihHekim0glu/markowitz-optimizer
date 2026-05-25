@@ -39,9 +39,7 @@ except Exception as exc:  # ImportError or partial install
 
 
 @st.cache_data(show_spinner=False)
-def _synthetic_returns(
-    tickers: tuple[str, ...], start: str, end: str, seed: int
-) -> pd.DataFrame:
+def _synthetic_returns(tickers: tuple[str, ...], start: str, end: str, seed: int) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     n_assets = len(tickers)
     idx = pd.bdate_range(start=start, end=end)
@@ -86,9 +84,7 @@ def _load_returns(cfg: SidebarConfig) -> pd.DataFrame:
                 f"Real data unavailable ({exc.__class__.__name__}); "
                 "falling back to synthetic returns."
             )
-    return _synthetic_returns(
-        cfg.tickers, cfg.start.isoformat(), cfg.end.isoformat(), cfg.seed
-    )
+    return _synthetic_returns(cfg.tickers, cfg.start.isoformat(), cfg.end.isoformat(), cfg.seed)
 
 
 @st.cache_data(show_spinner=False)
@@ -129,9 +125,7 @@ def _compute_frontier(returns: pd.DataFrame, cfg_payload: dict) -> dict:
     weights = pd.Series(tan_w, index=mu.index, name="weight")
 
     min_vol_idx = int(frontier_df["volatility"].idxmin())
-    sharpe = (frontier_df["expected_return"] - rf) / frontier_df["volatility"].replace(
-        0, np.nan
-    )
+    sharpe = (frontier_df["expected_return"] - rf) / frontier_df["volatility"].replace(0, np.nan)
     max_sharpe_idx = int(sharpe.idxmax()) if sharpe.notna().any() else min_vol_idx
     frontier_df["label"] = None
     frontier_df.loc[min_vol_idx, "label"] = "min_vol"
@@ -181,8 +175,7 @@ cfg = render_sidebar(key_prefix="frontier")
 
 if not HAS_OPTIMIZER:
     st.warning(
-        f"Library not fully installed ({_import_error}); "
-        "showing analytic fallback only.",
+        f"Library not fully installed ({_import_error}); showing analytic fallback only.",
         icon=":material/warning:",
     )
 

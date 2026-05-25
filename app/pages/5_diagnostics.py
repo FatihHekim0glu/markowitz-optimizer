@@ -24,9 +24,7 @@ inject_css()
 
 
 @st.cache_data(show_spinner=False)
-def _synthetic_returns(
-    tickers: tuple[str, ...], seed: int, n_days: int = 1260
-) -> pd.DataFrame:
+def _synthetic_returns(tickers: tuple[str, ...], seed: int, n_days: int = 1260) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     n = len(tickers)
     drifts = rng.uniform(0.05, 0.14, size=n) / 252.0
@@ -58,8 +56,12 @@ def _moments_table(returns: pd.DataFrame) -> pd.DataFrame:
 def _return_distribution(returns: pd.DataFrame) -> go.Figure:
     fig = go.Figure()
     palette_cycle = [
-        PALETTE["navy"], PALETTE["amber"], PALETTE["teal"],
-        PALETTE["slate_blue"], PALETTE["bronze"], PALETTE["crimson"],
+        PALETTE["navy"],
+        PALETTE["amber"],
+        PALETTE["teal"],
+        PALETTE["slate_blue"],
+        PALETTE["bronze"],
+        PALETTE["crimson"],
     ]
     for i, col in enumerate(returns.columns):
         fig.add_trace(
@@ -145,7 +147,7 @@ with tab_cov:
     eigvals = np.linalg.eigvalsh(returns.cov().values)
     eig_fig = go.Figure(
         go.Bar(
-            x=[f"λ{i+1}" for i in range(len(eigvals))],
+            x=[f"λ{i + 1}" for i in range(len(eigvals))],
             y=np.sort(eigvals)[::-1],
             marker={"color": PALETTE["navy"]},
         )

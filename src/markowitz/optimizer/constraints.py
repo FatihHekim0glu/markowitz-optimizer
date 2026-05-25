@@ -44,12 +44,10 @@ class ConstraintContext:
 class Constraint(Protocol):
     """Anything that knows how to attach itself to a CVXPY problem."""
 
-    def apply_cvxpy(self, w: cp.Variable, ctx: ConstraintContext) -> list[cp.Constraint]:
-        ...
+    def apply_cvxpy(self, w: cp.Variable, ctx: ConstraintContext) -> list[cp.Constraint]: ...
 
     @property
-    def description(self) -> str:
-        ...
+    def description(self) -> str: ...
 
 
 # ---------------------------------------------------------------------------
@@ -65,9 +63,7 @@ class LongOnly:
     def description(self) -> str:
         return "long_only"
 
-    def apply_cvxpy(
-        self, w: cp.Variable, ctx: ConstraintContext
-    ) -> list[cp.Constraint]:
+    def apply_cvxpy(self, w: cp.Variable, ctx: ConstraintContext) -> list[cp.Constraint]:
         del ctx  # unused; kept for protocol uniformity
         return [w >= 0]
 
@@ -87,21 +83,15 @@ class WeightBounds:
     def description(self) -> str:
         return f"weight_bounds({self.lower!r}, {self.upper!r})"
 
-    def _resolve(
-        self, bound: float | Sequence[float], n: int
-    ) -> np.ndarray:
+    def _resolve(self, bound: float | Sequence[float], n: int) -> np.ndarray:
         if isinstance(bound, (int, float)):
             return np.full(n, float(bound))
         arr = np.asarray(list(bound), dtype=float)
         if arr.shape != (n,):
-            raise ValueError(
-                f"weight bound has shape {arr.shape}, expected ({n},)"
-            )
+            raise ValueError(f"weight bound has shape {arr.shape}, expected ({n},)")
         return arr
 
-    def apply_cvxpy(
-        self, w: cp.Variable, ctx: ConstraintContext
-    ) -> list[cp.Constraint]:
+    def apply_cvxpy(self, w: cp.Variable, ctx: ConstraintContext) -> list[cp.Constraint]:
         lower = self._resolve(self.lower, ctx.n_assets)
         upper = self._resolve(self.upper, ctx.n_assets)
         if np.any(lower > upper):
@@ -127,17 +117,12 @@ class SectorCap:
     def description(self) -> str:
         return f"sector_cap({len(self.caps)} caps)"
 
-    def apply_cvxpy(
-        self, w: cp.Variable, ctx: ConstraintContext
-    ) -> list[cp.Constraint]:
+    def apply_cvxpy(self, w: cp.Variable, ctx: ConstraintContext) -> list[cp.Constraint]:
         # deferred import - cvxpy is optional
         import cvxpy as cp_  # noqa: PLC0415
 
         constraints: list[cp.Constraint] = []
-        sector_of = {
-            ticker: self.sector_mapping.get(ticker)
-            for ticker in ctx.tickers
-        }
+        sector_of = {ticker: self.sector_mapping.get(ticker) for ticker in ctx.tickers}
         for sector, cap in self.caps.items():
             mask = np.array(
                 [1.0 if sector_of[t] == sector else 0.0 for t in ctx.tickers],
@@ -169,9 +154,7 @@ class LeverageCap:
     def description(self) -> str:
         return f"leverage_cap({self.max_leverage})"
 
-    def apply_cvxpy(
-        self, w: cp.Variable, ctx: ConstraintContext
-    ) -> list[cp.Constraint]:
+    def apply_cvxpy(self, w: cp.Variable, ctx: ConstraintContext) -> list[cp.Constraint]:
         # deferred import - cvxpy is optional
         import cvxpy as cp_  # noqa: PLC0415
 
@@ -193,9 +176,7 @@ class TurnoverCap:
     def description(self) -> str:
         return f"turnover_cap({self.max_turnover})"
 
-    def apply_cvxpy(
-        self, w: cp.Variable, ctx: ConstraintContext
-    ) -> list[cp.Constraint]:
+    def apply_cvxpy(self, w: cp.Variable, ctx: ConstraintContext) -> list[cp.Constraint]:
         # deferred import - cvxpy is optional
         import cvxpy as cp_  # noqa: PLC0415
 
@@ -203,9 +184,7 @@ class TurnoverCap:
         return [cp_.norm(w - prev_arr, 1) <= self.max_turnover]
 
 
-def _align_prev_weights(
-    prev: pd.Series | np.ndarray, tickers: tuple[str, ...]
-) -> np.ndarray:
+def _align_prev_weights(prev: pd.Series | np.ndarray, tickers: tuple[str, ...]) -> np.ndarray:
     """Reindex ``prev`` onto ``tickers``, filling missing tickers with 0."""
     try:
         # deferred import - keeps constraints importable without pandas
@@ -217,9 +196,7 @@ def _align_prev_weights(
         pass
     arr = np.asarray(prev, dtype=float)
     if arr.shape != (len(tickers),):
-        raise ValueError(
-            f"prev_weights shape {arr.shape} does not match {len(tickers)} tickers"
-        )
+        raise ValueError(f"prev_weights shape {arr.shape} does not match {len(tickers)} tickers")
     return arr
 
 
@@ -246,7 +223,5 @@ class CustomConstraint:
     def description(self) -> str:
         return self._description
 
-    def apply_cvxpy(
-        self, w: cp.Variable, ctx: ConstraintContext
-    ) -> list[cp.Constraint]:
+    def apply_cvxpy(self, w: cp.Variable, ctx: ConstraintContext) -> list[cp.Constraint]:
         return list(self.builder(w, ctx))

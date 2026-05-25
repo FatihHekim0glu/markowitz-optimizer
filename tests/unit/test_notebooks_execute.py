@@ -65,9 +65,6 @@ def test_notebook_outputs_stripped(nb_name: str) -> None:
     for idx, cell in enumerate(nb.cells):
         if cell.cell_type == "code":
             assert cell.execution_count is None, (
-                f"{nb_name} cell {idx} has execution_count={cell.execution_count!r}; "
-                "run nbstripout"
+                f"{nb_name} cell {idx} has execution_count={cell.execution_count!r}; run nbstripout"
             )
-            assert cell.outputs == [], (
-                f"{nb_name} cell {idx} has non-empty outputs; run nbstripout"
-            )
+            assert cell.outputs == [], f"{nb_name} cell {idx} has non-empty outputs; run nbstripout"

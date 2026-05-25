@@ -69,13 +69,9 @@ class AnalyticFrontier:
         Sigma_arr = np.asarray(Sigma, dtype=np.float64)
 
         if mu_arr.ndim != 1:
-            raise NumericalError(
-                f"mu must be 1-D, got shape {mu_arr.shape!r}"
-            )
+            raise NumericalError(f"mu must be 1-D, got shape {mu_arr.shape!r}")
         if Sigma_arr.ndim != 2 or Sigma_arr.shape[0] != Sigma_arr.shape[1]:
-            raise NumericalError(
-                f"Sigma must be square 2-D, got shape {Sigma_arr.shape!r}"
-            )
+            raise NumericalError(f"Sigma must be square 2-D, got shape {Sigma_arr.shape!r}")
         if mu_arr.shape[0] != Sigma_arr.shape[0]:
             raise NumericalError(
                 "Dimension mismatch between mu and Sigma: "
@@ -213,11 +209,7 @@ class AnalyticFrontier:
         lam1 = (self._A * mu_target - self._B) / self._D
         lam2 = (self._C - self._B * mu_target) / self._D
         w = lam1 * self._Sinv_mu + lam2 * self._Sinv_one
-        var = (
-            self._A * mu_target * mu_target
-            - 2.0 * self._B * mu_target
-            + self._C
-        ) / self._D
+        var = (self._A * mu_target * mu_target - 2.0 * self._B * mu_target + self._C) / self._D
         # Floor to zero to absorb sub-eps rounding at the GMV vertex.
         var = max(var, 0.0)
         return Portfolio(
@@ -255,9 +247,7 @@ class AnalyticFrontier:
                 mu_max = mu_min + 1.0
 
         if mu_max < mu_min:
-            raise ValueError(
-                f"mu_max ({mu_max}) must be >= mu_min ({mu_min})"
-            )
+            raise ValueError(f"mu_max ({mu_max}) must be >= mu_min ({mu_min})")
 
         grid = np.linspace(float(mu_min), float(mu_max), int(n_points))
         return [self.efficient_return(float(m)) for m in grid]

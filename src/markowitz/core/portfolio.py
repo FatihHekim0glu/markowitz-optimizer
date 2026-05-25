@@ -94,13 +94,9 @@ def portfolio_performance(
     if w.ndim != 1:
         raise NumericalError(f"weights must be 1-D, got shape {w.shape!r}")
     if mu_arr.ndim != 1 or mu_arr.shape != w.shape:
-        raise NumericalError(
-            f"mu must be 1-D with shape {w.shape}, got {mu_arr.shape!r}"
-        )
+        raise NumericalError(f"mu must be 1-D with shape {w.shape}, got {mu_arr.shape!r}")
     if S.ndim != 2 or S.shape != (w.shape[0], w.shape[0]):
-        raise NumericalError(
-            f"Sigma must be {w.shape[0]}x{w.shape[0]}, got {S.shape!r}"
-        )
+        raise NumericalError(f"Sigma must be {w.shape[0]}x{w.shape[0]}, got {S.shape!r}")
     if not (np.all(np.isfinite(w)) and np.all(np.isfinite(mu_arr)) and np.all(np.isfinite(S))):
         raise NumericalError("Inputs contain non-finite values")
 
@@ -110,8 +106,6 @@ def portfolio_performance(
     # Clip to zero before sqrt to avoid spurious NaNs.
     vol = float(np.sqrt(max(var, 0.0)))
 
-    sharpe: float | None = (
-        None if rf is None else ((er - float(rf)) / vol if vol > 0.0 else None)
-    )
+    sharpe: float | None = None if rf is None else ((er - float(rf)) / vol if vol > 0.0 else None)
 
     return Portfolio(weights=w, expected_return=er, volatility=vol, sharpe=sharpe)

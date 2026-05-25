@@ -67,13 +67,9 @@ def cholesky_solve(
     b_arr = np.asarray(b, dtype=np.float64)
 
     if Sigma_arr.ndim != 2 or Sigma_arr.shape[0] != Sigma_arr.shape[1]:
-        raise ValueError(
-            f"Sigma must be a square 2-D matrix, got shape {Sigma_arr.shape!r}"
-        )
+        raise ValueError(f"Sigma must be a square 2-D matrix, got shape {Sigma_arr.shape!r}")
     if b_arr.shape[0] != Sigma_arr.shape[0]:
-        raise ValueError(
-            f"Shape mismatch: Sigma is {Sigma_arr.shape}, b is {b_arr.shape}"
-        )
+        raise ValueError(f"Shape mismatch: Sigma is {Sigma_arr.shape}, b is {b_arr.shape}")
 
     if check_finite:
         if not np.all(np.isfinite(Sigma_arr)):
@@ -92,9 +88,7 @@ def cholesky_solve(
             min_eigenvalue=float(np.min(eigs)) if eigs.size else 0.0,
         ) from exc
 
-    solution: FloatArray = cho_solve(
-        cho, b_arr, overwrite_b=overwrite_b, check_finite=False
-    )
+    solution: FloatArray = cho_solve(cho, b_arr, overwrite_b=overwrite_b, check_finite=False)
     return solution
 
 
@@ -130,9 +124,7 @@ def psd_check(
 
     arr = np.asarray(Sigma, dtype=np.float64)
     if arr.ndim != 2 or arr.shape[0] != arr.shape[1]:
-        raise ValueError(
-            f"Sigma must be a square 2-D matrix, got shape {arr.shape!r}"
-        )
+        raise ValueError(f"Sigma must be a square 2-D matrix, got shape {arr.shape!r}")
     if not np.all(np.isfinite(arr)):
         raise SingularCovarianceError(
             "Sigma contains non-finite values",
@@ -157,10 +149,7 @@ def psd_check(
     if lam_min < tol:
         cond = float("inf") if lam_min <= 0 else lam_max / lam_min
         raise SingularCovarianceError(
-            (
-                f"Sigma is not positive definite "
-                f"(min eigenvalue = {lam_min:.3e} < tol = {tol:.1e})"
-            ),
+            (f"Sigma is not positive definite (min eigenvalue = {lam_min:.3e} < tol = {tol:.1e})"),
             condition_number=cond,
             min_eigenvalue=lam_min,
         )
@@ -219,9 +208,7 @@ def regularize(
 
     arr = np.asarray(Sigma, dtype=np.float64)
     if arr.ndim != 2 or arr.shape[0] != arr.shape[1]:
-        raise ValueError(
-            f"Sigma must be a square 2-D matrix, got shape {arr.shape!r}"
-        )
+        raise ValueError(f"Sigma must be a square 2-D matrix, got shape {arr.shape!r}")
     if method != "ridge":
         raise ValueError(f"Unsupported regularization method: {method!r}")
 

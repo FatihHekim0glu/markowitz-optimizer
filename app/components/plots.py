@@ -83,9 +83,7 @@ def weights_bar(weights: pd.Series | pd.DataFrame, top_n: int = 12) -> go.Figure
     if top_n is not None and len(series) > top_n:
         series = series.tail(top_n)
 
-    colors = [
-        PALETTE["navy"] if v >= 0 else PALETTE["crimson"] for v in series.values
-    ]
+    colors = [PALETTE["navy"] if v >= 0 else PALETTE["crimson"] for v in series.values]
     fig = go.Figure(
         go.Bar(
             x=series.values,

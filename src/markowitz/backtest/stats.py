@@ -154,9 +154,7 @@ def ledoit_wolf_bootstrap_pvalue(
     count = 0
     for _ in range(B):
         starts = rng.integers(0, n, size=n_blocks)
-        idx = np.concatenate(
-            [(s + np.arange(block_length)) % n for s in starts]
-        )[:n]
+        idx = np.concatenate([(s + np.arange(block_length)) % n for s in starts])[:n]
         a_b = a[idx]
         b_b = b[idx]
         # Recenter under H0: equal Sharpes -> compare against observed.

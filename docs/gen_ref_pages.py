@@ -63,7 +63,7 @@ else:
             with mkdocs_gen_files.open(doc_path, "w") as fh:
                 fh.write(f"# `{ident}`\n\n")
                 fh.write(
-                    "!!! warning \"API reference unavailable\"\n"
+                    '!!! warning "API reference unavailable"\n'
                     f"    Could not render `{ident}`: `{exc!r}`.\n"
                 )
 

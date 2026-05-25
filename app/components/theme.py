@@ -34,7 +34,11 @@ def register_plotly_template(name: str = "fund") -> None:
         layout=go.Layout(
             font={"family": "Inter, system-ui, sans-serif", "size": 13, "color": "#1A1A1A"},
             title={
-                "font": {"family": "Inter, system-ui, sans-serif", "size": 18, "color": PALETTE["navy"]},
+                "font": {
+                    "family": "Inter, system-ui, sans-serif",
+                    "size": 18,
+                    "color": PALETTE["navy"],
+                },
                 "x": 0.0,
                 "xanchor": "left",
             },

@@ -76,21 +76,15 @@ class Views:
         for k, view in enumerate(self._views):
             if isinstance(view, AbsoluteView):
                 if view.asset not in self._asset_index:
-                    raise ViewValidationError(
-                        f"View {k}: asset {view.asset!r} not in universe."
-                    )
+                    raise ViewValidationError(f"View {k}: asset {view.asset!r} not in universe.")
             elif isinstance(view, RelativeView):
                 self._validate_relative(k, view)
             else:  # pragma: no cover - defensive; dataclass union is closed
-                raise ViewValidationError(
-                    f"View {k}: unsupported view type {type(view).__name__}."
-                )
+                raise ViewValidationError(f"View {k}: unsupported view type {type(view).__name__}.")
 
             c = view.confidence
             if c is not None and (not np.isfinite(c) or c < 0.0 or c > 1.0):
-                raise ViewValidationError(
-                    f"View {k}: confidence must lie in [0, 1], got {c!r}."
-                )
+                raise ViewValidationError(f"View {k}: confidence must lie in [0, 1], got {c!r}.")
             confidences_seen.append(c is not None)
 
         if confidences_seen and any(confidences_seen) and not all(confidences_seen):
@@ -107,15 +101,11 @@ class Views:
         row = np.zeros(len(self._assets))
         for asset, w in view.long_leg.items():
             if asset not in self._asset_index:
-                raise ViewValidationError(
-                    f"View {k}: long-leg asset {asset!r} not in universe."
-                )
+                raise ViewValidationError(f"View {k}: long-leg asset {asset!r} not in universe.")
             row[self._asset_index[asset]] += float(w)
         for asset, w in view.short_leg.items():
             if asset not in self._asset_index:
-                raise ViewValidationError(
-                    f"View {k}: short-leg asset {asset!r} not in universe."
-                )
+                raise ViewValidationError(f"View {k}: short-leg asset {asset!r} not in universe.")
             row[self._asset_index[asset]] -= float(w)
         if abs(row.sum()) > _ZERO_TOL:
             raise ViewValidationError(

@@ -170,12 +170,8 @@ class MeanVariance:
 
     def max_sharpe(self, risk_free_rate: float = 0.0) -> pd.Series:
         """Maximise the Sharpe ratio via the Cornuejols--Tutuncu reformulation."""
-        long_only = bool(
-            self._weight_bounds[0] is not None and self._weight_bounds[0] >= 0
-        )
-        detect_degeneracy(
-            self._mu, risk_free_rate, self._weight_bounds, long_only=long_only
-        )
+        long_only = bool(self._weight_bounds[0] is not None and self._weight_bounds[0] >= 0)
+        detect_degeneracy(self._mu, risk_free_rate, self._weight_bounds, long_only=long_only)
 
         # Translate the user's linear (in w) constraints into y-space:
         # the substitution w = y / kappa means any "Aw <= b * 1" becomes
@@ -208,9 +204,7 @@ class MeanVariance:
         weights = back_transform(np.asarray(reform.y.value))
         return self._finalise(weights)
 
-    def max_quadratic_utility(
-        self, risk_aversion: float = 1.0
-    ) -> pd.Series:
+    def max_quadratic_utility(self, risk_aversion: float = 1.0) -> pd.Series:
         """Maximise ``mu^T w - (lambda/2) w^T Sigma w``.
 
         With ``risk_aversion = lambda``.  ``lambda > 0`` is required.
@@ -218,9 +212,7 @@ class MeanVariance:
         if risk_aversion <= 0:
             raise ValueError("risk_aversion must be strictly positive")
         w = _cp.Variable(self.n_assets, name="w")
-        utility = self._mu @ w - 0.5 * risk_aversion * _cp.quad_form(
-            w, _cp.psd_wrap(self._sigma)
-        )
+        utility = self._mu @ w - 0.5 * risk_aversion * _cp.quad_form(w, _cp.psd_wrap(self._sigma))
         objective = _cp.Maximize(utility)
         constraints = self._base_constraints(w) + self._user_constraints(w)
         problem = _cp.Problem(objective, constraints)
@@ -262,9 +254,7 @@ class MeanVariance:
             raise ValueError("target_volatility must be strictly positive")
         w = _cp.Variable(self.n_assets, name="w")
         objective = _cp.Maximize(self._mu @ w)
-        risk_cap = _cp.quad_form(w, _cp.psd_wrap(self._sigma)) <= (
-            float(target_volatility) ** 2
-        )
+        risk_cap = _cp.quad_form(w, _cp.psd_wrap(self._sigma)) <= (float(target_volatility) ** 2)
         constraints = self._base_constraints(w) + self._user_constraints(w) + [risk_cap]
         problem = _cp.Problem(objective, constraints)
         solve_problem(
@@ -291,9 +281,7 @@ class MeanVariance:
         """
         if weights is None:
             if self._last_weights is None:
-                raise ValueError(
-                    "No weights available -- call an optimizer first or pass weights."
-                )
+                raise ValueError("No weights available -- call an optimizer first or pass weights.")
             w_arr = self._last_weights.to_numpy(dtype=float)
         else:
             w_arr = _align_weights(weights, self._tickers)
@@ -327,9 +315,7 @@ class MeanVariance:
         ctx = ConstraintContext(
             tickers=self._tickers,
             n_assets=self.n_assets,
-            long_only=bool(
-                self._weight_bounds[0] is not None and self._weight_bounds[0] >= 0
-            ),
+            long_only=bool(self._weight_bounds[0] is not None and self._weight_bounds[0] >= 0),
         )
         out: list[cp.Constraint] = []
         for c in self._constraints:
@@ -395,44 +381,31 @@ def _canonicalise_mu(mu: pd.Series | np.ndarray) -> tuple[tuple[str, ...], np.nd
     return tickers, arr
 
 
-def _canonicalise_sigma(
-    sigma: pd.DataFrame | np.ndarray, tickers: tuple[str, ...]
-) -> np.ndarray:
+def _canonicalise_sigma(sigma: pd.DataFrame | np.ndarray, tickers: tuple[str, ...]) -> np.ndarray:
     n = len(tickers)
     if isinstance(sigma, pd.DataFrame):
         sigma_df: pd.DataFrame = sigma
-        if (
-            list(sigma_df.index) != list(tickers)
-            or list(sigma_df.columns) != list(tickers)
-        ):
+        if list(sigma_df.index) != list(tickers) or list(sigma_df.columns) != list(tickers):
             # Try to reindex to the canonical order; raises KeyError if mismatched.
             sigma_df = sigma_df.reindex(index=list(tickers), columns=list(tickers))
             if sigma_df.isna().any().any():
-                raise ValueError(
-                    "sigma index/columns do not align with mu's index"
-                )
+                raise ValueError("sigma index/columns do not align with mu's index")
         arr = sigma_df.to_numpy(dtype=float)
     else:
         arr = np.asarray(sigma, dtype=float)
     if arr.shape != (n, n):
-        raise ValueError(
-            f"sigma shape {arr.shape} incompatible with {n} assets"
-        )
+        raise ValueError(f"sigma shape {arr.shape} incompatible with {n} assets")
     # Symmetrise to guard against tiny asymmetry from estimators.
     arr = 0.5 * (arr + arr.T)
     return np.asarray(arr, dtype=np.float64)
 
 
-def _align_weights(
-    weights: pd.Series | np.ndarray, tickers: tuple[str, ...]
-) -> np.ndarray:
+def _align_weights(weights: pd.Series | np.ndarray, tickers: tuple[str, ...]) -> np.ndarray:
     if isinstance(weights, pd.Series):
         return weights.reindex(list(tickers)).fillna(0.0).to_numpy(dtype=float)
     arr = np.asarray(weights, dtype=float).reshape(-1)
     if arr.shape != (len(tickers),):
-        raise ValueError(
-            f"weights shape {arr.shape} does not match {len(tickers)} tickers"
-        )
+        raise ValueError(f"weights shape {arr.shape} does not match {len(tickers)} tickers")
     return arr
 
 

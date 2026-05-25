@@ -60,9 +60,7 @@ class WalkForward:
         if lookback < 2:
             raise InsufficientHistoryError("lookback must be >= 2")
         if lookback >= len(returns):
-            raise InsufficientHistoryError(
-                f"lookback={lookback} >= len(returns)={len(returns)}"
-            )
+            raise InsufficientHistoryError(f"lookback={lookback} >= len(returns)={len(returns)}")
         if not strategies:
             raise AlignmentError("at least one strategy is required")
 

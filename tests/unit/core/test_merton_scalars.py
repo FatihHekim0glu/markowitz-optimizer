@@ -94,8 +94,6 @@ class TestComputeABCD:
             mu_val * mu_val / sigma2,
         )
         abcd = compute_abcd(np.array([mu_val]), np.array([[sigma2]]))
-        np.testing.assert_allclose(
-            (abcd.A, abcd.B, abcd.C), expected, atol=1e-14
-        )
+        np.testing.assert_allclose((abcd.A, abcd.B, abcd.C), expected, atol=1e-14)
         # D = A*C - B^2 is algebraically zero for N=1; allow FP slack.
         assert abs(abcd.D) <= 1e-14 * abcd.A * abcd.C

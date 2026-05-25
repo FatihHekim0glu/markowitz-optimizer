@@ -28,12 +28,8 @@ if TYPE_CHECKING:  # pragma: no cover - typing only
 
 
 _OK_STATUSES = frozenset({"optimal", "optimal_inaccurate"})
-_INFEASIBLE_STATUSES = frozenset(
-    {"infeasible", "infeasible_inaccurate"}
-)
-_UNBOUNDED_STATUSES = frozenset(
-    {"unbounded", "unbounded_inaccurate"}
-)
+_INFEASIBLE_STATUSES = frozenset({"infeasible", "infeasible_inaccurate"})
+_UNBOUNDED_STATUSES = frozenset({"unbounded", "unbounded_inaccurate"})
 
 
 @dataclass(frozen=True)

@@ -19,8 +19,8 @@ from .exceptions import CalendarMismatchError
 # Minimal NYSE holiday set covering the test window. Used only when
 # pandas_market_calendars is not installed.
 _NYSE_FIXED_HOLIDAYS: Final = {
-    (1, 1),    # New Year's Day
-    (7, 4),    # Independence Day
+    (1, 1),  # New Year's Day
+    (7, 4),  # Independence Day
     (12, 25),  # Christmas
 }
 
@@ -28,10 +28,7 @@ _NYSE_FIXED_HOLIDAYS: Final = {
 def _fallback_sessions(start: pd.Timestamp, end: pd.Timestamp) -> pd.DatetimeIndex:
     """Weekday sessions minus a small fixed US holiday set."""
     days = pd.bdate_range(start=start, end=end, freq="C", normalize=True)
-    keep = [
-        d for d in days
-        if (d.month, d.day) not in _NYSE_FIXED_HOLIDAYS
-    ]
+    keep = [d for d in days if (d.month, d.day) not in _NYSE_FIXED_HOLIDAYS]
     return pd.DatetimeIndex(keep).tz_localize(None)
 
 
@@ -116,8 +113,7 @@ def reindex_to_sessions(
             longest_gap = max(longest_gap, current_gap)
     if longest_gap > max_gap_sessions:
         raise CalendarMismatchError(
-            f"Gap of {longest_gap} consecutive sessions exceeds "
-            f"max_gap_sessions={max_gap_sessions}"
+            f"Gap of {longest_gap} consecutive sessions exceeds max_gap_sessions={max_gap_sessions}"
         )
 
     reindexed = df.reindex(sessions)

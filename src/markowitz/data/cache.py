@@ -46,12 +46,7 @@ def cache_path(root: str | os.PathLike[str], ticker: str, source: str, frequency
     by this function.
     """
     root_path = Path(root)
-    return (
-        root_path
-        / _sanitize(source)
-        / _sanitize(frequency)
-        / f"{_sanitize(ticker)}.parquet"
-    )
+    return root_path / _sanitize(source) / _sanitize(frequency) / f"{_sanitize(ticker)}.parquet"
 
 
 def write_cache(

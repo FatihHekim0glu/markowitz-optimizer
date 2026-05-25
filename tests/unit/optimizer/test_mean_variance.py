@@ -307,9 +307,7 @@ class TestReportingAndFailures:
 
 
 class TestRegularisationAndDegeneracies:
-    def test_regularize_adds_ridge(
-        self, small_problem: tuple[pd.Series, pd.DataFrame]
-    ) -> None:
+    def test_regularize_adds_ridge(self, small_problem: tuple[pd.Series, pd.DataFrame]) -> None:
         """Passing ``regularize=eps`` must add ``eps*I`` to Sigma in place."""
         mu, sigma = small_problem
         eps = 1e-3

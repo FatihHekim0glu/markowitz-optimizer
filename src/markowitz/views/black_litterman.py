@@ -31,9 +31,7 @@ from .exceptions import (
 from .idzorek import idzorek_omega, idzorek_omega_approx
 from .view_specs import Views
 
-_OMEGA_METHODS: frozenset[str] = frozenset(
-    {"he_litterman", "idzorek_exact", "idzorek_approx"}
-)
+_OMEGA_METHODS: frozenset[str] = frozenset({"he_litterman", "idzorek_exact", "idzorek_approx"})
 _COV_MODES: frozenset[str] = frozenset({"full", "prior_only"})
 
 
@@ -86,8 +84,7 @@ class BlackLitterman:
         self._validate_inputs(cov, market_weights, tau, delta)
         if omega_method not in _OMEGA_METHODS:
             raise OmegaSpecificationError(
-                f"omega_method must be one of {sorted(_OMEGA_METHODS)}, "
-                f"got {omega_method!r}."
+                f"omega_method must be one of {sorted(_OMEGA_METHODS)}, got {omega_method!r}."
             )
         if posterior_covariance_mode not in _COV_MODES:
             raise BlackLittermanError(
@@ -100,18 +97,14 @@ class BlackLitterman:
         self._market_weights: pd.Series = market_weights.reindex(cov.index)
         if self._market_weights.isna().any():
             missing = self._market_weights.index[self._market_weights.isna()].tolist()
-            raise BlackLittermanError(
-                f"Market weights missing entries for: {missing}."
-            )
+            raise BlackLittermanError(f"Market weights missing entries for: {missing}.")
         self._tau: float = float(tau)
         self._delta: float = float(delta)
         self._omega_method: str = omega_method
         self._posterior_cov_mode: str = posterior_covariance_mode
         self._risk_free_rate: float | None = risk_free_rate
 
-        self._views: Views | None = (
-            views if views is not None and len(views) > 0 else None
-        )
+        self._views: Views | None = views if views is not None and len(views) > 0 else None
         self._omega_user: np.ndarray | None = omega
 
         # Cached numerical pieces (built lazily).
@@ -130,13 +123,9 @@ class BlackLitterman:
         delta: float,
     ) -> None:
         if cov.shape[0] != cov.shape[1]:
-            raise BlackLittermanError(
-                f"Covariance must be square, got shape {cov.shape}."
-            )
+            raise BlackLittermanError(f"Covariance must be square, got shape {cov.shape}.")
         if not cov.index.equals(cov.columns):
-            raise BlackLittermanError(
-                "Covariance row and column labels must match."
-            )
+            raise BlackLittermanError("Covariance row and column labels must match.")
         if not np.allclose(cov.to_numpy(), cov.to_numpy().T, atol=1e-10):
             raise BlackLittermanError("Covariance matrix must be symmetric.")
         if market_weights.empty:
@@ -152,9 +141,7 @@ class BlackLitterman:
     def implied_returns(self) -> pd.Series:
         """Return the equilibrium-implied prior ``pi = delta * Sigma * w_mkt``."""
         if self._pi is None:
-            self._pi = _implied_returns(
-                self._cov, self._market_weights, delta=self._delta
-            )
+            self._pi = _implied_returns(self._cov, self._market_weights, delta=self._delta)
         return self._pi.copy()
 
     def _resolve_omega(
@@ -182,9 +169,7 @@ class BlackLitterman:
         # Idzorek variants require per-view confidences.
         confidences = self._views.confidences()
         if confidences is None:
-            raise OmegaSpecificationError(
-                f"omega_method={method!r} requires per-view confidences."
-            )
+            raise OmegaSpecificationError(f"omega_method={method!r} requires per-view confidences.")
         w_mkt_arr = self._market_weights.to_numpy()
         if method == "idzorek_approx":
             return idzorek_omega_approx(p_mat, tau_sigma, confidences)
@@ -221,8 +206,7 @@ class BlackLitterman:
             c_factor = cho_factor(m_inv, lower=False)
         except np.linalg.LinAlgError as exc:  # pragma: no cover - defensive
             raise OmegaSpecificationError(
-                "P tau Sigma P^T + Omega is not positive definite; "
-                "check Omega specification."
+                "P tau Sigma P^T + Omega is not positive definite; check Omega specification."
             ) from exc
 
         x = cho_solve(c_factor, view_innov)
@@ -239,9 +223,7 @@ class BlackLitterman:
         sigma_bl = 0.5 * (sigma_bl + sigma_bl.T)
 
         self._mu_bl = pd.Series(mu_bl, index=self._assets, name="mu_bl")
-        self._sigma_bl = pd.DataFrame(
-            sigma_bl, index=self._assets, columns=self._assets
-        )
+        self._sigma_bl = pd.DataFrame(sigma_bl, index=self._assets, columns=self._assets)
 
     def posterior_returns(self) -> pd.Series:
         """Return the Black-Litterman posterior excess-return vector."""

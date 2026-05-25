@@ -37,9 +37,7 @@ except Exception as exc:
 
 
 @st.cache_data(show_spinner=False)
-def _synthetic_returns(
-    tickers: tuple[str, ...], seed: int, n_days: int = 1260
-) -> pd.DataFrame:
+def _synthetic_returns(tickers: tuple[str, ...], seed: int, n_days: int = 1260) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     n_assets = len(tickers)
     drifts = rng.uniform(0.05, 0.14, size=n_assets) / 252.0
@@ -165,9 +163,9 @@ if not rows:
     st.stop()
 
 summary_df = pd.DataFrame(rows)
-summary_df["tangency_sharpe"] = (
-    summary_df["tangency_return"] - cfg.risk_free_rate
-) / summary_df["tangency_vol"].replace(0, np.nan)
+summary_df["tangency_sharpe"] = (summary_df["tangency_return"] - cfg.risk_free_rate) / summary_df[
+    "tangency_vol"
+].replace(0, np.nan)
 st.dataframe(
     summary_df.style.format(
         {

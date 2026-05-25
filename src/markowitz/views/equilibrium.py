@@ -46,9 +46,7 @@ def implied_returns(
         ``delta`` is not strictly positive.
     """
     if cov.shape[0] != cov.shape[1]:
-        raise ValueError(
-            f"Covariance matrix must be square, got shape {cov.shape}."
-        )
+        raise ValueError(f"Covariance matrix must be square, got shape {cov.shape}.")
     if not cov.index.equals(cov.columns):
         raise ValueError("Covariance matrix index and columns must be identical.")
     if delta <= 0.0:
@@ -57,9 +55,7 @@ def implied_returns(
     aligned = market_weights.reindex(cov.index)
     if aligned.isna().any():
         missing = aligned.index[aligned.isna()].tolist()
-        raise ValueError(
-            f"Market weights missing entries for: {missing}."
-        )
+        raise ValueError(f"Market weights missing entries for: {missing}.")
 
     pi = delta * cov.to_numpy() @ aligned.to_numpy()
     return pd.Series(pi, index=cov.index, name="pi")
@@ -100,13 +96,9 @@ def infer_delta(
         variance.
     """
     if len(market_returns) < 2:
-        raise ValueError(
-            "At least two market-return observations are required to estimate delta."
-        )
+        raise ValueError("At least two market-return observations are required to estimate delta.")
     variance = float(market_returns.var(ddof=ddof))
     if not np.isfinite(variance) or variance <= 0.0:
-        raise ValueError(
-            f"Market-return variance must be strictly positive, got {variance}."
-        )
+        raise ValueError(f"Market-return variance must be strictly positive, got {variance}.")
     expected = float(market_returns.mean())
     return (expected - risk_free_rate) / variance

@@ -63,17 +63,12 @@ def compute_abcd(mu: npt.ArrayLike, Sigma: npt.ArrayLike) -> MertonABCD:
     Sigma_arr = np.asarray(Sigma, dtype=np.float64)
 
     if mu_arr.ndim != 1:
-        raise NumericalError(
-            f"mu must be a 1-D vector, got shape {mu_arr.shape!r}"
-        )
+        raise NumericalError(f"mu must be a 1-D vector, got shape {mu_arr.shape!r}")
     if Sigma_arr.ndim != 2 or Sigma_arr.shape[0] != Sigma_arr.shape[1]:
-        raise NumericalError(
-            f"Sigma must be a square 2-D matrix, got shape {Sigma_arr.shape!r}"
-        )
+        raise NumericalError(f"Sigma must be a square 2-D matrix, got shape {Sigma_arr.shape!r}")
     if mu_arr.shape[0] != Sigma_arr.shape[0]:
         raise NumericalError(
-            "Dimension mismatch: mu has length "
-            f"{mu_arr.shape[0]} but Sigma is {Sigma_arr.shape}"
+            f"Dimension mismatch: mu has length {mu_arr.shape[0]} but Sigma is {Sigma_arr.shape}"
         )
     if not np.all(np.isfinite(mu_arr)):
         raise NumericalError("mu contains non-finite values")

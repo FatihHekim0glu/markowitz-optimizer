@@ -76,14 +76,10 @@ def test_strategy_returns_wrong_shape_raises() -> None:
 
 
 def test_quarterly_rebalance_holds_weights_between_rebalances() -> None:
-    wf = WalkForward(
-        _make_returns(), {"1/N": OneOverN()}, lookback=60, rebalance="Q"
-    )
+    wf = WalkForward(_make_returns(), {"1/N": OneOverN()}, lookback=60, rebalance="Q")
     result = wf.run()
     non_rebal_to = [
-        result.turnover["1/N"].iloc[i]
-        for i in range(1, len(result.turnover))
-        if i % 3 != 0
+        result.turnover["1/N"].iloc[i] for i in range(1, len(result.turnover)) if i % 3 != 0
     ]
     assert any(x == 0.0 for x in non_rebal_to)
 
@@ -103,8 +99,6 @@ def test_invalid_rebalance_alias_falls_back_to_monthly() -> None:
 
 
 def test_walk_forward_debug_no_lookahead_passes_on_normal() -> None:
-    wf = WalkForward(
-        _make_returns(), {"1/N": OneOverN()}, lookback=60, debug_no_lookahead=True
-    )
+    wf = WalkForward(_make_returns(), {"1/N": OneOverN()}, lookback=60, debug_no_lookahead=True)
     result = wf.run()
     assert not result.returns_net.isna().any().any()

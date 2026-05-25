@@ -21,9 +21,7 @@ import pandas as pd
 
 from .exceptions import DataIntegrityError, EmptyDataError, ProviderUnavailableError
 
-_BASE_URL: Final = (
-    "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp"
-)
+_BASE_URL: Final = "https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp"
 
 _FREQUENCY_SUFFIX: Final[dict[str, str]] = {
     "monthly": "_CSV.zip",
@@ -64,7 +62,7 @@ def _parse_french_csv(text: str, *, frequency: str) -> pd.DataFrame:
     columns = [c.strip() for c in header[1:]]
 
     records: list[tuple[str, list[str]]] = []
-    for row in rows[header_idx + 1:]:
+    for row in rows[header_idx + 1 :]:
         if not row or not row[0].strip():
             # blank row signals end of first table (annual data follows)
             break

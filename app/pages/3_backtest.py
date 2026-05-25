@@ -24,15 +24,11 @@ inject_css()
 import importlib.util as _ilu
 
 HAS_BACKTEST = _ilu.find_spec("markowitz.backtest") is not None
-_import_error: str | None = (
-    None if HAS_BACKTEST else "markowitz.backtest not importable"
-)
+_import_error: str | None = None if HAS_BACKTEST else "markowitz.backtest not importable"
 
 
 @st.cache_data(show_spinner=False)
-def _synthetic_returns(
-    tickers: tuple[str, ...], seed: int, n_days: int = 2000
-) -> pd.DataFrame:
+def _synthetic_returns(tickers: tuple[str, ...], seed: int, n_days: int = 2000) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
     n_assets = len(tickers)
     drifts = rng.uniform(0.05, 0.14, size=n_assets) / 252.0
@@ -60,7 +56,7 @@ def _fallback_backtest(
     """Closed-form walk-forward MVO backtest used when the library is partial."""
     rebal_dates = returns.resample(rebalance).first().index
     # Snap to nearest available trading day in returns.index:
-    idx_pos = returns.index.get_indexer(rebal_dates, method='nearest')
+    idx_pos = returns.index.get_indexer(rebal_dates, method="nearest")
     schedule = list(returns.index[idx_pos])
 
     weights_hist: list[pd.Series] = []

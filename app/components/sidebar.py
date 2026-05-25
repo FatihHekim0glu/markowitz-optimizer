@@ -9,8 +9,16 @@ from typing import Literal
 import streamlit as st
 
 DEFAULT_TICKERS: tuple[str, ...] = (
-    "AAPL", "MSFT", "GOOG", "AMZN", "JPM",
-    "XOM", "JNJ", "PG", "KO", "WMT",
+    "AAPL",
+    "MSFT",
+    "GOOG",
+    "AMZN",
+    "JPM",
+    "XOM",
+    "JNJ",
+    "PG",
+    "KO",
+    "WMT",
 )
 
 Rebalance = Literal["ME", "QE", "YE"]
@@ -61,9 +69,7 @@ def render_sidebar(*, key_prefix: str = "main") -> SidebarConfig:
         default_start = today - timedelta(days=365 * 5)
         col_a, col_b = st.columns(2)
         with col_a:
-            start = st.date_input(
-                "Start", value=default_start, key=f"{key_prefix}_start"
-            )
+            start = st.date_input("Start", value=default_start, key=f"{key_prefix}_start")
         with col_b:
             end = st.date_input("End", value=today, key=f"{key_prefix}_end")
 
@@ -82,9 +88,7 @@ def render_sidebar(*, key_prefix: str = "main") -> SidebarConfig:
         )
 
         st.markdown("### Constraints")
-        long_only = st.toggle(
-            "Long-only", value=True, key=f"{key_prefix}_long_only"
-        )
+        long_only = st.toggle("Long-only", value=True, key=f"{key_prefix}_long_only")
         max_weight = st.slider(
             "Max single weight",
             min_value=0.05,

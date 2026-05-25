@@ -30,13 +30,9 @@ _LARGE: float = 1e12
 
 def _check_confidences(c: np.ndarray) -> None:
     if c.ndim != 1:
-        raise OmegaSpecificationError(
-            f"confidences must be one-dimensional, got shape {c.shape}."
-        )
+        raise OmegaSpecificationError(f"confidences must be one-dimensional, got shape {c.shape}.")
     if np.any(~np.isfinite(c)) or np.any(c < 0.0) or np.any(c > 1.0):
-        raise OmegaSpecificationError(
-            "All confidences must be finite numbers in [0, 1]."
-        )
+        raise OmegaSpecificationError("All confidences must be finite numbers in [0, 1].")
 
 
 def idzorek_omega_approx(

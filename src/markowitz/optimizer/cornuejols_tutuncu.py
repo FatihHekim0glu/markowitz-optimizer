@@ -125,9 +125,7 @@ def reformulate_max_sharpe(
     Sigma = np.asarray(Sigma, dtype=float)
     n = mu.shape[0]
     if Sigma.shape != (n, n):
-        raise ValueError(
-            f"Sigma shape {Sigma.shape} incompatible with mu length {n}"
-        )
+        raise ValueError(f"Sigma shape {Sigma.shape} incompatible with mu length {n}")
 
     excess = mu - float(risk_free_rate)
 
@@ -168,8 +166,7 @@ def back_transform(y_value: np.ndarray) -> np.ndarray:
     total = float(np.sum(y_arr))
     if not np.isfinite(total) or abs(total) <= _BACK_TRANSFORM_EPS:
         raise NumericalError(
-            "Cornuejols--Tutuncu back-transform failed: sum(y) is "
-            f"numerically zero ({total!r}).",
+            f"Cornuejols--Tutuncu back-transform failed: sum(y) is numerically zero ({total!r}).",
             solver_status="degenerate",
         )
     return y_arr / total

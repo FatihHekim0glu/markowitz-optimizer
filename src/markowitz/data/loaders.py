@@ -81,8 +81,7 @@ def load_prices(
         non_na = int(series.notna().sum())
         if non_na < min_history_sessions:
             raise InsufficientDataError(
-                f"{tkr} has {non_na} observations; "
-                f"need >= {min_history_sessions}"
+                f"{tkr} has {non_na} observations; need >= {min_history_sessions}"
             )
         frames[tkr] = series
 
@@ -122,8 +121,7 @@ def compute_returns(
         rets = rets.dropna(how="any")
     if rets.empty:
         raise InsufficientDataError(
-            "computed return frame is empty after dropna; "
-            "check input price coverage"
+            "computed return frame is empty after dropna; check input price coverage"
         )
     return cast(pd.DataFrame, rets)
 
@@ -151,8 +149,7 @@ def align_universe(
         aligned = aligned.dropna(how="any")
         if aligned.shape[0] < min_obs_per_ticker:
             raise InsufficientDataError(
-                f"common window has {aligned.shape[0]} rows; "
-                f"need >= {min_obs_per_ticker}"
+                f"common window has {aligned.shape[0]} rows; need >= {min_obs_per_ticker}"
             )
     return cast(pd.DataFrame, aligned)
 

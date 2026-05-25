@@ -158,8 +158,8 @@ def _ledoit_wolf_constant_corr(values: np.ndarray) -> tuple[np.ndarray, float]:
     np.fill_diagonal(prior, var)
 
     # pi_hat: sum over (i,j) of asymptotic variance of sample[i,j].
-    x_sq = x_centered ** 2
-    pi_mat = (x_sq.T @ x_sq) / float(t_obs) - sample ** 2
+    x_sq = x_centered**2
+    pi_mat = (x_sq.T @ x_sq) / float(t_obs) - sample**2
     pi_hat = float(pi_mat.sum())
 
     # rho_hat: diagonal contribution + off-diagonal LW (2003) formula.
@@ -213,9 +213,7 @@ class EWMACovariance(_BaseCov):
         periods_per_year: int | None = None,
     ) -> None:
         if halflife_years is not None and lam is not None:
-            raise EstimatorConfigError(
-                "Provide at most one of halflife_years or lam, not both."
-            )
+            raise EstimatorConfigError("Provide at most one of halflife_years or lam, not both.")
         self.halflife_years = halflife_years
         self.lam = lam
         self.burn_in = burn_in
@@ -247,9 +245,7 @@ class EWMACovariance(_BaseCov):
 
         lam = self._resolve_lambda(ppy)
         if not 0.0 < lam < 1.0:
-            raise EstimatorConfigError(
-                f"resolved lambda must lie in (0, 1); got {lam}"
-            )
+            raise EstimatorConfigError(f"resolved lambda must lie in (0, 1); got {lam}")
 
         burn = max(n_assets + 1, 20) if self.burn_in == "auto" else int(self.burn_in)
         burn = min(burn, n_obs)
