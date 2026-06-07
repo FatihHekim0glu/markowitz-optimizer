@@ -1,5 +1,7 @@
 # markowitz-optimizer
 
+> **Now live as an interactive web tool at https://fatihhekimoglu-platform.vercel.app/tools/markowitz-optimizer** — part of the fatihhekimoglu.com quantitative-tools platform. The Streamlit app here remains usable for local development; the hosted version uses the same compute library wrapped in a FastAPI backend.
+
 > From-scratch mean-variance portfolio optimization toolkit reproducing canonical literature results.
 
 [![CI](https://github.com/FatihHekim0glu/markowitz-optimizer/actions/workflows/ci.yml/badge.svg)](https://github.com/FatihHekim0glu/markowitz-optimizer/actions/workflows/ci.yml)

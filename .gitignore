@@ -98,3 +98,8 @@ data/processed/
 # Logs
 logs/
 *.log
+
+# Session / agent artifacts
+CLAUDE.md
+.claude/
+2026-*-heres-the-deep-dive-*.txt
