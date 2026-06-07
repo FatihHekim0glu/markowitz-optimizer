@@ -16,6 +16,9 @@ portfolio theory. Every numerical routine is derived from first principles in th
 cross-checked against an independent reference: closed-form Lagrangian scalars, `PyPortfolioOpt`,
 and `sklearn.covariance` where applicable. The aim is a library that a graduate student can read
 end-to-end while also being numerically defensible enough to back small-scale research papers.
+On the data side, the library ships a Polygon.io REST client and a survivorship-bias-aware S&P 500
+point-in-time universe builder so walk-forward backtests do not silently leak look-ahead through a
+modern constituent list.
 
 ## Key results
 
@@ -27,6 +30,62 @@ end-to-end while also being numerically defensible enough to back small-scale re
 - Naive sample-based mean-variance optimization frequently underperforms the equal-weight `1/N`
   benchmark out of sample on the 10-industry FF dataset, reproducing the qualitative finding of
   DeMiguel, Garlappi, and Uppal (2009) (test: `tests/regression/test_demiguel_2009.py`).
+
+## Data sources & universe
+
+`markowitz.data_providers` is the remote-data layer. Two providers conform to the same
+`get_eod` / `get_ticker_meta` / `get_grouped_daily` surface:
+
+- **`PolygonProvider`** — Polygon.io REST client. Adjusted daily OHLCV, sliding-window token
+  bucket (~100 rpm Starter tier), exponential-backoff retries on 429 and 5xx, typed exception
+  hierarchy (`PolygonError` / `PolygonAuthError` / `PolygonRateLimitError` / `PolygonDataError`).
+- **`YFinanceProvider`** — thin adapter over the existing yfinance pipeline used by
+  `markowitz.data`. Only `get_eod` is supported; `get_ticker_meta` and `get_grouped_daily`
+  raise `PolygonError` because yfinance has no equivalent.
+
+`make_provider()` picks the right one: it returns `PolygonProvider` when `POLYGON_API_KEY` is
+set in the environment (or passed explicitly), and the yfinance adapter otherwise. This lets the
+Streamlit demo and the universe builder be written against one surface.
+
+### Survivorship-bias-aware S&P 500 universe
+
+`SP500UniverseBuilder.get_membership_as_of(date_)` intersects a recent snapshot of the index
+(`CURRENT_SP500`) with the Polygon grouped-daily snapshot for that date. A ticker counts as a
+member iff it appears in the static list *and* has a real trading bar on the as-of date. This is
+materially better than the naive "today's-list on yesterday's-date" approach because:
+
+- Symbols that had not yet IPO'd drop out (no grouped-daily row), preventing look-ahead leakage
+  from the modern constituent list into early-window backtests.
+- Every returned ticker is guaranteed to have same-day OHLCV available, which is the dominant
+  correctness concern in walk-forward research.
+
+`get_membership_window(start, end, freq='ME')` builds membership at each rebalance date in the
+window (month-end by default), giving the backtest harness a date-keyed dict of universes.
+
+Known limitations (read before using in published research):
+
+- Tickers that were once in the index but have since been delisted or acquired (Lehman, EMC,
+  Sprint, ...) are absent. That is the pure "survivor" blind spot and biases backtests upward
+  on average — a truly bias-free history requires a paid index-rebalance feed.
+- Without `POLYGON_API_KEY` the builder warns once and returns the static today-list. That
+  path *is* survivorship-biased and is provided only so the offline demo runs.
+
+```python
+import os
+from datetime import date
+
+from markowitz.data_providers import SP500UniverseBuilder, make_provider
+
+os.environ["POLYGON_API_KEY"] = "..."  # required for the PIT path
+provider = make_provider()
+builder = SP500UniverseBuilder(provider)
+members = builder.get_membership_as_of(date(2015, 6, 30))
+print(len(members), members[:5])
+```
+
+The Streamlit sidebar exposes the same toggle under **Universe: Custom tickers | S&P 500
+point-in-time** and renders `data:` and `universe:` badges on the landing page so the active
+data path is always visible.
 
 ## Quick start
 

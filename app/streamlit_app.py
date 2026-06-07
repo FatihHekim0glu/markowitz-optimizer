@@ -57,6 +57,17 @@ with col_r:
 
 st.divider()
 
+# Lightweight badges so each page header signals which data path is active
+# without having to read the sidebar config object on every page.
+import os as _os
+
+_has_polygon = bool(_os.environ.get("POLYGON_API_KEY", "").strip())
+_data_badge = "polygon" if _has_polygon else "yfinance"
+_universe_badge = "PIT" if _has_polygon else "custom"
+b1, b2 = st.columns(2)
+b1.markdown(f"**data:** `{_data_badge}`")
+b2.markdown(f"**universe:** `{_universe_badge}`")
+
 m1, m2, m3, m4 = st.columns(4)
 m1.metric("Default universe", "10 tickers")
 m2.metric("Frequency", "Daily")

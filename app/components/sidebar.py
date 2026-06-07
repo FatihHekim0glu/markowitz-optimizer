@@ -24,6 +24,7 @@ DEFAULT_TICKERS: tuple[str, ...] = (
 Rebalance = Literal["ME", "QE", "YE"]
 CovMethod = Literal["Sample", "LedoitWolf"]
 MeanMethod = Literal["Sample", "JorionBayesStein", "CAPM"]
+UniverseMode = Literal["custom", "sp500_pit"]
 
 
 @dataclass(frozen=True)
@@ -38,6 +39,8 @@ class SidebarConfig:
     max_weight: float
     risk_free_rate: float
     use_real_data: bool = False
+    universe_mode: UniverseMode = "custom"
+    data_source: str = "synthetic"
     seed: int = 7
     run_token: int = field(default=0, compare=False)
 
@@ -55,12 +58,29 @@ def render_sidebar(*, key_prefix: str = "main") -> SidebarConfig:
     """
     with st.sidebar:
         st.markdown("### Universe")
+        universe_mode = st.radio(
+            "Universe",
+            options=("custom", "sp500_pit"),
+            index=0,
+            format_func=lambda x: {
+                "custom": "Custom tickers",
+                "sp500_pit": "S&P 500 point-in-time",
+            }[x],
+            key=f"{key_prefix}_universe_mode",
+            help=(
+                "Point-in-time uses Polygon grouped-daily to drop symbols "
+                "that were not trading on the as-of date. Requires "
+                "POLYGON_API_KEY; without it the static today-list is used "
+                "(survivorship-biased)."
+            ),
+        )
         tickers_text = st.text_area(
             "Tickers",
             value=", ".join(DEFAULT_TICKERS),
             height=80,
             key=f"{key_prefix}_tickers",
             help="Comma- or newline-separated symbols.",
+            disabled=universe_mode == "sp500_pit",
         )
         tickers = _parse_tickers(tickers_text) or DEFAULT_TICKERS
 
@@ -142,6 +162,16 @@ def render_sidebar(*, key_prefix: str = "main") -> SidebarConfig:
     if run_clicked:
         st.session_state[token_key] = int(st.session_state[token_key]) + 1
 
+    import os
+
+    has_polygon = bool(os.environ.get("POLYGON_API_KEY", "").strip())
+    if use_real_data and has_polygon:
+        data_source = "polygon"
+    elif use_real_data:
+        data_source = "yfinance"
+    else:
+        data_source = "synthetic"
+
     return SidebarConfig(
         tickers=tickers,
         start=start,
@@ -153,5 +183,7 @@ def render_sidebar(*, key_prefix: str = "main") -> SidebarConfig:
         max_weight=float(max_weight),
         risk_free_rate=float(risk_free_rate),
         use_real_data=bool(use_real_data),
+        universe_mode=universe_mode,
+        data_source=data_source,
         run_token=int(st.session_state[token_key]),
     )
