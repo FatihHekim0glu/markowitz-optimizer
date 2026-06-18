@@ -94,7 +94,7 @@ def read_cache(
 ) -> pd.DataFrame | None:
     """Read a cached dataframe, returning ``None`` on miss or corruption.
 
-    This function never raises — corruption is signalled via a
+    This function never raises - corruption is signalled via a
     :class:`CacheCorruptionWarning` and a ``None`` return so callers can
     transparently fall back to re-fetching.
     """
@@ -102,7 +102,10 @@ def read_cache(
     if not path.exists():
         return None
     try:
-        return pd.read_parquet(path, engine="pyarrow")
+        # pyarrow is the project's parquet engine; it is also pandas' default
+        # when installed, so the engine is left implicit to satisfy the typed
+        # read_parquet overloads across pandas-stubs versions.
+        return pd.read_parquet(path)
     except Exception as exc:  # broad: any deserialization failure is corruption
         warnings.warn(
             f"Cache file {path} could not be read ({exc!r}); ignoring.",

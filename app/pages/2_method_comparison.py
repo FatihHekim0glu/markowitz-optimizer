@@ -1,4 +1,4 @@
-"""Page 2 — Compare covariance and mean estimators side-by-side."""
+"""Page 2 - Compare covariance and mean estimators side-by-side."""
 
 from __future__ import annotations
 

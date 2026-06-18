@@ -18,7 +18,7 @@ The only inverse is K×K. Posterior covariance `Sigma_BL = Sigma + M` derived vi
 ## Decision drivers
 
 - Numerical stability: avoids inverting N×N matrices that may be ill-conditioned.
-- Performance: K is typically 1–5; the K×K solve is trivial.
+- Performance: K is typically 1 to 5; the K×K solve is trivial.
 - Cholesky-only linear algebra throughout.
 
 ## Considered options

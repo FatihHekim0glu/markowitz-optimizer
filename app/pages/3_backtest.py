@@ -1,4 +1,4 @@
-"""Page 3 — Walk-forward backtest."""
+"""Page 3 - Walk-forward backtest."""
 
 from __future__ import annotations
 
@@ -170,7 +170,7 @@ result = st.session_state["bt_result"]
 stats = _stats(result["returns"], st.session_state["bt_cfg"]["rf"])
 
 if not stats:
-    st.warning("No statistics available — try a longer date range or different universe.")
+    st.warning("No statistics available - try a longer date range or different universe.")
     st.stop()
 
 m1, m2, m3, m4 = st.columns(4)

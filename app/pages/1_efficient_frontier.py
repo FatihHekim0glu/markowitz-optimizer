@@ -1,4 +1,4 @@
-"""Page 1 — Efficient frontier."""
+"""Page 1 - Efficient frontier."""
 
 from __future__ import annotations
 

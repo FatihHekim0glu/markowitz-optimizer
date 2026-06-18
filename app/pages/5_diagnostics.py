@@ -1,4 +1,4 @@
-"""Page 5 — Data diagnostics: distributions, correlations, conditioning."""
+"""Page 5 - Data diagnostics: distributions, correlations, conditioning."""
 
 from __future__ import annotations
 
@@ -136,7 +136,7 @@ with tab_moments:
 
 with tab_cov:
     st.write(
-        "Eigenvalue spread of the sample covariance — large condition numbers "
+        "Eigenvalue spread of the sample covariance - large condition numbers "
         "indicate near-singular Σ and unstable mean-variance solutions."
     )
     m1, m2, m3 = st.columns(3)

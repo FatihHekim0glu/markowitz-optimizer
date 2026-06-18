@@ -4,7 +4,7 @@
 is available (either passed in or read from ``POLYGON_API_KEY``), and the
 :class:`YFinanceProvider` adapter otherwise. The factory is the single
 recommended entry point for callers that want to be agnostic about whether a
-key is configured — the Streamlit demo and the universe builder both go
+key is configured. The Streamlit demo and the universe builder both go
 through it.
 """
 
@@ -35,22 +35,20 @@ def make_provider(
         ``POLYGON_API_KEY`` environment variable.
     inner_yfinance:
         Optional pre-built provider passed straight through to
-        :class:`YFinanceProvider` when the fallback path is taken — useful
+        :class:`YFinanceProvider` when the fallback path is taken, useful
         for tests that need to inject a stub instead of touching the network.
     """
-    key = (api_key or os.environ.get("POLYGON_API_KEY", "")).strip()
+    raw_key = api_key if api_key else os.environ.get("POLYGON_API_KEY", "")
+    key = raw_key.strip()
     if key:
         try:
             return PolygonProvider(api_key=key)
         except PolygonAuthError:
-            # Construction failed despite a non-empty key — fall back rather
-            # than propagate, so the demo keeps running with yfinance data.
+            # Construction failed despite a non-empty key, so fall back rather
+            # than propagate and let the demo keep running with yfinance data.
             logger.warning(
-                "POLYGON_API_KEY present but PolygonProvider rejected it; "
-                "falling back to yfinance"
+                "POLYGON_API_KEY present but PolygonProvider rejected it; falling back to yfinance"
             )
     else:
-        logger.info(
-            "POLYGON_API_KEY not set; using yfinance provider (no PIT universe)"
-        )
+        logger.info("POLYGON_API_KEY not set; using yfinance provider (no PIT universe)")
     return YFinanceProvider(inner=inner_yfinance)

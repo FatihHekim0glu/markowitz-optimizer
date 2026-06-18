@@ -48,7 +48,5 @@ def test_get_ticker_meta_raises_polygon_error() -> None:
 
 def test_get_grouped_daily_raises_polygon_error() -> None:
     provider = YFinanceProvider(inner=_CloseOnlyStub())
-    with pytest.raises(
-        PolygonError, match="get_grouped_daily requires POLYGON_API_KEY"
-    ):
+    with pytest.raises(PolygonError, match="get_grouped_daily requires POLYGON_API_KEY"):
         provider.get_grouped_daily(date(2024, 1, 2))
