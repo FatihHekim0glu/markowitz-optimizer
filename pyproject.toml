@@ -233,6 +233,8 @@ disable_error_code = ["attr-defined", "no-untyped-call", "arg-type"]
 # that adding imports later does not require touching mypy config.
 [[tool.mypy.overrides]]
 module = [
+    "httpx",
+    "httpx.*",
     "scipy",
     "scipy.*",
     "sklearn",

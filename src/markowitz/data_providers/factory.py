@@ -38,7 +38,8 @@ def make_provider(
         :class:`YFinanceProvider` when the fallback path is taken, useful
         for tests that need to inject a stub instead of touching the network.
     """
-    key = (api_key or os.environ.get("POLYGON_API_KEY", "")).strip()
+    raw_key = api_key if api_key else os.environ.get("POLYGON_API_KEY", "")
+    key = raw_key.strip()
     if key:
         try:
             return PolygonProvider(api_key=key)

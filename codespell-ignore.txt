@@ -13,3 +13,6 @@ falsy
 froms
 fro
 strat
+acn
+alle
+coo
