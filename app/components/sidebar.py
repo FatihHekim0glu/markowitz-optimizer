@@ -141,7 +141,7 @@ def render_sidebar(*, key_prefix: str = "main") -> SidebarConfig:
             "Load real data (yfinance)",
             value=False,
             key=f"{key_prefix}_real",
-            help="Off by default — synthetic returns keep the demo offline.",
+            help="Off by default - synthetic returns keep the demo offline.",
         )
 
         st.divider()

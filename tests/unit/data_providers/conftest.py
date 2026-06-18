@@ -37,7 +37,7 @@ class FakeClient:
 
     Pops responses from ``responses`` in FIFO order. If ``raise_on_call`` is
     set, raises that exception once before continuing with the queued
-    responses — handy for simulating transient network failures.
+    responses - handy for simulating transient network failures.
     """
 
     responses: list[FakeResponse | Exception] = field(default_factory=list)

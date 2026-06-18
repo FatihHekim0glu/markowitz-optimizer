@@ -270,7 +270,7 @@ def test_token_bucket_admits_up_to_rpm_immediately() -> None:
     bucket = _TokenBucket(rpm=5)
     for _ in range(5):
         bucket.acquire()
-    # No sleep expected — the queued timestamps fit within the 60s window.
+    # No sleep expected - the queued timestamps fit within the 60s window.
     assert True
 
 

@@ -37,11 +37,11 @@ with col_l:
         """
 This dashboard is organized as five pages, each accessible from the sidebar:
 
-1. **Efficient frontier** — analytic + constrained frontier with key portfolios.
-2. **Method comparison** — sample vs. shrinkage covariance and mean estimators.
-3. **Backtest** — walk-forward portfolio simulation with turnover and costs.
-4. **Black-Litterman** — combine equilibrium priors with user views.
-5. **Diagnostics** — return distributions, correlations, condition numbers.
+1. **Efficient frontier** - analytic + constrained frontier with key portfolios.
+2. **Method comparison** - sample vs. shrinkage covariance and mean estimators.
+3. **Backtest** - walk-forward portfolio simulation with turnover and costs.
+4. **Black-Litterman** - combine equilibrium priors with user views.
+5. **Diagnostics** - return distributions, correlations, condition numbers.
 
 Configure the universe and estimators in the left sidebar, then press
 **Run optimization** to populate the active page.

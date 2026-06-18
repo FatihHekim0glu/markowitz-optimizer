@@ -33,7 +33,7 @@ def test_returns_polygon_when_explicit_key_passed() -> None:
 def test_returns_yfinance_when_no_key_anywhere() -> None:
     provider = make_provider(api_key=None, inner_yfinance=_StubYF())
     assert isinstance(provider, YFinanceProvider)
-    # The fallback must actually be wired up — exercise the round-trip.
+    # The fallback must actually be wired up - exercise the round-trip.
     df = provider.get_eod("AAPL", date(2024, 1, 2), date(2024, 1, 2))
     assert df.loc[pd.Timestamp("2024-01-02"), "Close"] == 123.0
 

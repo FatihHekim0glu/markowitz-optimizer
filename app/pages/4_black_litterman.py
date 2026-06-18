@@ -1,4 +1,4 @@
-"""Page 4 — Black-Litterman view blending."""
+"""Page 4 - Black-Litterman view blending."""
 
 from __future__ import annotations
 
