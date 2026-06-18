@@ -23,6 +23,9 @@ ALLOWLIST_NAMES: frozenset[str] = frozenset(
     {
         "check_no_ai_attribution.py",
         "codespell-ignore.txt",
+        # The commit-message guard workflow spells out the forbidden tokens in
+        # its own grep pattern, so it is the enforcement mechanism too.
+        "no-ai-attribution.yml",
     }
 )
 
