@@ -5,7 +5,7 @@
 
 ## Context
 
-The Black-Litterman τ scalar reflects uncertainty in the prior. The literature is genuinely inconsistent: He-Litterman (1999) and Idzorek (2005) use small τ (0.025–0.05); Meucci (2010) uses τ = 1 ("tau-less convention") and absorbs the scaling into Ω.
+The Black-Litterman τ scalar reflects uncertainty in the prior. The literature is genuinely inconsistent: He-Litterman (1999) and Idzorek (2005) use small τ (0.025 to 0.05); Meucci (2010) uses τ = 1 ("tau-less convention") and absorbs the scaling into Ω.
 
 ## Decision
 

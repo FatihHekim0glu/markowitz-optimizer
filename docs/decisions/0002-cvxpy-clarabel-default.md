@@ -20,9 +20,9 @@ Default to **cvxpy + CLARABEL**. CLARABEL is open-source (Apache-2.0), an interi
 ## Considered options
 
 - Option A: cvxpy + CLARABEL. **Chosen.**
-- Option B: cvxpy + OSQP — chosen for parametric sweeps (frontier) where warm-starts matter.
-- Option C: scipy SLSQP only — kept as a no-extra-deps fallback.
-- Option D: MOSEK — commercial license excludes it.
+- Option B: cvxpy + OSQP, chosen for parametric sweeps (frontier) where warm-starts matter.
+- Option C: scipy SLSQP only, kept as a no-extra-deps fallback.
+- Option D: MOSEK, excluded by its commercial license.
 
 ## Consequences
 

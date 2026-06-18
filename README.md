@@ -1,6 +1,6 @@
 # markowitz-optimizer
 
-> **Now live as an interactive web tool at https://fatihhekimoglu-platform.vercel.app/tools/markowitz-optimizer** — part of the fatihhekimoglu.com quantitative-tools platform. The Streamlit app here remains usable for local development; the hosted version uses the same compute library wrapped in a FastAPI backend.
+> **Now live as an interactive web tool at https://fatihhekimoglu-platform.vercel.app/tools/markowitz-optimizer**, part of the fatihhekimoglu.com quantitative-tools platform. The Streamlit app here remains usable for local development; the hosted version uses the same compute library wrapped in a FastAPI backend.
 
 > From-scratch mean-variance portfolio optimization toolkit reproducing canonical literature results.
 
@@ -25,21 +25,22 @@ modern constituent list.
 - Reproduces He & Litterman (1999) Table 2 implied equilibrium returns to within `1e-4` on the
   canonical seven-country equity example (test: `tests/regression/test_he_litterman_1999.py`).
 - `markowitz.estimators.covariance.LedoitWolfShrinkage` agrees with
-  `sklearn.covariance.LedoitWolf` to `1e-10` Frobenius distance across 200 randomized fixtures
-  (test: `tests/parity/test_ledoit_wolf_parity.py`).
-- Naive sample-based mean-variance optimization frequently underperforms the equal-weight `1/N`
-  benchmark out of sample on the 10-industry FF dataset, reproducing the qualitative finding of
-  DeMiguel, Garlappi, and Uppal (2009) (test: `tests/regression/test_demiguel_2009.py`).
+  `sklearn.covariance.LedoitWolf` to `1e-10` Frobenius distance across randomized fixtures
+  (test: `tests/parity/test_sklearn_lw_parity.py`).
+- The walk-forward harness reproduces He & Litterman (1999) and checks for look-ahead leakage
+  (`tests/regression/test_no_lookahead.py`). The full DeMiguel, Garlappi, and Uppal (2009) `1/N`
+  horse race over the Fama-French datasets is on the v0.2 roadmap, not the current release; see
+  `docs/validation/demiguel-2009.md` for the planned protocol.
 
 ## Data sources & universe
 
 `markowitz.data_providers` is the remote-data layer. Two providers conform to the same
 `get_eod` / `get_ticker_meta` / `get_grouped_daily` surface:
 
-- **`PolygonProvider`** — Polygon.io REST client. Adjusted daily OHLCV, sliding-window token
+- **`PolygonProvider`**: Polygon.io REST client. Adjusted daily OHLCV, sliding-window token
   bucket (~100 rpm Starter tier), exponential-backoff retries on 429 and 5xx, typed exception
   hierarchy (`PolygonError` / `PolygonAuthError` / `PolygonRateLimitError` / `PolygonDataError`).
-- **`YFinanceProvider`** — thin adapter over the existing yfinance pipeline used by
+- **`YFinanceProvider`**: thin adapter over the existing yfinance pipeline used by
   `markowitz.data`. Only `get_eod` is supported; `get_ticker_meta` and `get_grouped_daily`
   raise `PolygonError` because yfinance has no equivalent.
 
@@ -66,7 +67,7 @@ Known limitations (read before using in published research):
 
 - Tickers that were once in the index but have since been delisted or acquired (Lehman, EMC,
   Sprint, ...) are absent. That is the pure "survivor" blind spot and biases backtests upward
-  on average — a truly bias-free history requires a paid index-rebalance feed.
+  on average. A truly bias-free history requires a paid index-rebalance feed.
 - Without `POLYGON_API_KEY` the builder warns once and returns the static today-list. That
   path *is* survivorship-biased and is provided only so the offline demo runs.
 
@@ -166,12 +167,14 @@ simple (not log) so that portfolio aggregation is exact: `r_p = w' r`.
 
 | Reference | What is reproduced | Tolerance | Test file |
 |-----------|-------------------|-----------|-----------|
-| Markowitz (1952) | Closed-form A/B/C/D frontier vs numerical optimum | `1e-8` | `tests/unit/test_frontier_closed_form.py` |
-| Merton (1972) | Two-fund separation, GMV / tangency identities | `1e-9` | `tests/unit/test_merton_scalars.py` |
-| Ledoit & Wolf (2004) | Identity-target shrinkage vs `sklearn` | `1e-10` | `tests/parity/test_ledoit_wolf_parity.py` |
+| Markowitz (1952) | Closed-form A/B/C/D frontier vs numerical optimum | `1e-8` | `tests/unit/core/test_frontier.py` |
+| Merton (1972) | Two-fund separation, GMV / tangency identities | `1e-9` | `tests/unit/core/test_merton_scalars.py` |
+| Ledoit & Wolf (2004) | Identity-target shrinkage vs `sklearn` | `1e-10` | `tests/parity/test_sklearn_lw_parity.py` |
 | He & Litterman (1999) | Implied equilibrium and posterior on Table 2 | `1e-4` | `tests/regression/test_he_litterman_1999.py` |
-| DeMiguel et al. (2009) | `1/N` vs sample MV out-of-sample Sharpe ordering | qualitative | `tests/regression/test_demiguel_2009.py` |
 | PyPortfolioOpt | `max_sharpe`, `min_volatility` weights | `1e-6` | `tests/parity/test_pypfopt_parity.py` |
+
+The DeMiguel, Garlappi, and Uppal (2009) `1/N` horse race is planned for v0.2 and is not part of
+this release; the protocol is sketched in `docs/validation/demiguel-2009.md`.
 
 ## Limitations
 

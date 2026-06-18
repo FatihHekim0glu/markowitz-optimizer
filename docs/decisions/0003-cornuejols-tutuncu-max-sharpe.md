@@ -9,7 +9,7 @@ Maximizing the Sharpe ratio `(μᵀw − rf) / √(wᵀΣw)` is a nonconvex prob
 
 ## Decision
 
-Implement the Cornuejols-Tütüncü change of variables: introduce `y = w / κ` with `κ > 0`, fix `μ̃ᵀy = 1` (where `μ̃ = μ − rf·1`), and **minimize `yᵀΣy`** — a convex QP. Recover `w* = y* / 1ᵀy*`.
+Implement the Cornuejols-Tütüncü change of variables: introduce `y = w / κ` with `κ > 0`, fix `μ̃ᵀy = 1` (where `μ̃ = μ − rf·1`), and **minimize `yᵀΣy`**, a convex QP. Recover `w* = y* / 1ᵀy*`.
 
 ## Decision drivers
 
