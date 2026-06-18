@@ -54,9 +54,7 @@ def test_membership_window_uses_pandas_freq() -> None:
         date(2024, 3, 31): _frame_for(["AAPL"]),
     }
     builder = SP500UniverseBuilder(_StubProvider(frames))
-    out = builder.get_membership_window(
-        date(2024, 1, 1), date(2024, 3, 31), freq="ME"
-    )
+    out = builder.get_membership_window(date(2024, 1, 1), date(2024, 3, 31), freq="ME")
     assert set(out.keys()) == set(frames.keys())
     assert out[date(2024, 1, 31)] == sorted({"AAPL", "MSFT"})
     assert out[date(2024, 2, 29)] == sorted({"AAPL", "NVDA"})

@@ -88,9 +88,7 @@ def test_get_eod_returns_titlecase_ohlcv_with_date_index(fake_client_factory) ->
 def test_get_eod_empty_results_returns_empty_frame(fake_client_factory) -> None:
     from tests.unit.data_providers.conftest import FakeResponse
 
-    client = fake_client_factory(
-        FakeResponse(status_code=200, payload={"results": []})
-    )
+    client = fake_client_factory(FakeResponse(status_code=200, payload={"results": []}))
     provider = PolygonProvider(api_key="abc", session=client)
     df = provider.get_eod("AAPL", date(2024, 1, 2), date(2024, 1, 3))
     assert df.empty
@@ -210,9 +208,7 @@ def test_get_grouped_daily_indexes_by_ticker(fake_client_factory) -> None:
 def test_get_grouped_daily_empty_returns_empty_frame(fake_client_factory) -> None:
     from tests.unit.data_providers.conftest import FakeResponse
 
-    client = fake_client_factory(
-        FakeResponse(status_code=200, payload={"results": []})
-    )
+    client = fake_client_factory(FakeResponse(status_code=200, payload={"results": []}))
     provider = PolygonProvider(api_key="abc", session=client)
     df = provider.get_grouped_daily(date(2024, 1, 2))
     assert df.empty
@@ -222,9 +218,7 @@ def test_get_grouped_daily_empty_returns_empty_frame(fake_client_factory) -> Non
 def test_get_ticker_meta_missing_results_raises_data_error(fake_client_factory) -> None:
     from tests.unit.data_providers.conftest import FakeResponse
 
-    client = fake_client_factory(
-        FakeResponse(status_code=200, payload={"results": None})
-    )
+    client = fake_client_factory(FakeResponse(status_code=200, payload={"results": None}))
     provider = PolygonProvider(api_key="abc", session=client)
     with pytest.raises(PolygonDataError, match="No reference data"):
         provider.get_ticker_meta("AAPL")
@@ -252,9 +246,7 @@ def test_get_ticker_meta_returns_dict(fake_client_factory) -> None:
 def test_malformed_json_raises_data_error(fake_client_factory) -> None:
     from tests.unit.data_providers.conftest import FakeResponse
 
-    client = fake_client_factory(
-        FakeResponse(status_code=200, raise_json=True)
-    )
+    client = fake_client_factory(FakeResponse(status_code=200, raise_json=True))
     provider = PolygonProvider(api_key="abc", session=client)
     with pytest.raises(PolygonDataError, match="non-JSON"):
         provider.get_ticker_meta("AAPL")
@@ -263,9 +255,7 @@ def test_malformed_json_raises_data_error(fake_client_factory) -> None:
 def test_400_other_than_auth_raises_polygon_error(fake_client_factory) -> None:
     from tests.unit.data_providers.conftest import FakeResponse
 
-    client = fake_client_factory(
-        FakeResponse(status_code=404, text="not found")
-    )
+    client = fake_client_factory(FakeResponse(status_code=404, text="not found"))
     provider = PolygonProvider(api_key="abc", session=client)
     with pytest.raises(PolygonError, match="404"):
         provider.get_ticker_meta("ZZZZ")
@@ -289,9 +279,7 @@ def test_token_bucket_throttles_when_window_full(monkeypatch) -> None:
     sleep_calls: list[float] = []
     import markowitz.data_providers.polygon as polygon_mod
 
-    monkeypatch.setattr(
-        polygon_mod.time, "sleep", lambda s: sleep_calls.append(float(s))
-    )
+    monkeypatch.setattr(polygon_mod.time, "sleep", lambda s: sleep_calls.append(float(s)))
     # Three monotonic ticks: first two fill the window, third must wait.
     ticks = iter([0.0, 0.5, 1.0, 1.0])
     monkeypatch.setattr(polygon_mod.time, "monotonic", lambda: next(ticks))
@@ -299,6 +287,4 @@ def test_token_bucket_throttles_when_window_full(monkeypatch) -> None:
     bucket.acquire()
     bucket.acquire()
     bucket.acquire()
-    assert any(s > 0 for s in sleep_calls), (
-        "expected throttling sleep when window full"
-    )
+    assert any(s > 0 for s in sleep_calls), "expected throttling sleep when window full"

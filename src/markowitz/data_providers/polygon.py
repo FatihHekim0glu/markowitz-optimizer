@@ -3,9 +3,9 @@
 Public surface is :class:`PolygonProvider`, which exposes three methods used
 elsewhere in this package:
 
-- :meth:`get_eod` — daily OHLCV for a single ticker over an inclusive window.
-- :meth:`get_ticker_meta` — the ``/v3/reference/tickers/{ticker}`` payload.
-- :meth:`get_grouped_daily` — every actively-traded US stock on a given date.
+- :meth:`get_eod`: daily OHLCV for a single ticker over an inclusive window.
+- :meth:`get_ticker_meta`: the ``/v3/reference/tickers/{ticker}`` payload.
+- :meth:`get_grouped_daily`: every actively-traded US stock on a given date.
 
 The grouped-daily snapshot is what makes the survivorship-bias-aware S&P 500
 universe builder possible: it tells us which tickers had a real bar on the
@@ -66,7 +66,7 @@ _HTTP_TIMEOUT = 30.0
 
 
 class _TokenBucket:
-    """Sliding-window rate limiter — at most ``rpm`` requests per 60 seconds."""
+    """Sliding-window rate limiter: at most ``rpm`` requests per 60 seconds."""
 
     def __init__(self, rpm: int = _STARTER_RPM) -> None:
         self._rpm = rpm
@@ -123,9 +123,7 @@ class PolygonProvider:
     ) -> None:
         self._api_key = api_key or os.environ.get("POLYGON_API_KEY", "")
         if not self._api_key:
-            raise PolygonAuthError(
-                "POLYGON_API_KEY is required to instantiate PolygonProvider"
-            )
+            raise PolygonAuthError("POLYGON_API_KEY is required to instantiate PolygonProvider")
         self._owns_session = session is None
         self._session = session or httpx.Client(timeout=_HTTP_TIMEOUT)
         self._bucket = _TokenBucket(rpm=rpm)
@@ -222,21 +220,16 @@ class PolygonProvider:
                 continue
             if status_code >= 500:
                 last_exc = PolygonError(
-                    f"Polygon {status_code} on {path} "
-                    f"(attempt {attempt + 1}/{_MAX_ATTEMPTS})"
+                    f"Polygon {status_code} on {path} (attempt {attempt + 1}/{_MAX_ATTEMPTS})"
                 )
                 self._sleep_backoff(attempt)
                 continue
             if status_code >= 400:
-                raise PolygonError(
-                    f"Polygon {status_code} on {path}: {response.text[:200]}"
-                )
+                raise PolygonError(f"Polygon {status_code} on {path}: {response.text[:200]}")
             try:
                 return cast(dict[str, Any], response.json())
             except ValueError as exc:
-                raise PolygonDataError(
-                    f"Polygon returned non-JSON for {path}"
-                ) from exc
+                raise PolygonDataError(f"Polygon returned non-JSON for {path}") from exc
         if isinstance(last_exc, PolygonRateLimitError):
             raise last_exc
         raise PolygonError(
@@ -253,10 +246,7 @@ class PolygonProvider:
     # ------------------------------------------------------------------
 
     def _fetch_aggs(self, ticker: str, start: date, end: date) -> pd.DataFrame:
-        path = (
-            f"/v2/aggs/ticker/{ticker}/range/1/day/"
-            f"{start.isoformat()}/{end.isoformat()}"
-        )
+        path = f"/v2/aggs/ticker/{ticker}/range/1/day/{start.isoformat()}/{end.isoformat()}"
         payload = self._request(
             "GET",
             path,
@@ -272,12 +262,10 @@ class PolygonProvider:
                 continue
             # Polygon's daily aggregates encode the trading day as the UTC
             # midnight timestamp of that calendar date. Do NOT shift to
-            # America/New_York — that would move the bar back one day.
+            # America/New_York, which would move the bar back one day.
             records.append(
                 {
-                    "Date": pd.Timestamp(ts_ms, unit="ms", tz="UTC")
-                    .tz_localize(None)
-                    .normalize(),
+                    "Date": pd.Timestamp(ts_ms, unit="ms", tz="UTC").tz_localize(None).normalize(),
                     "Open": float(bar.get("o", 0.0)),
                     "High": float(bar.get("h", 0.0)),
                     "Low": float(bar.get("l", 0.0)),

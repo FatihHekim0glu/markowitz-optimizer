@@ -14,7 +14,7 @@ class PolygonError(Exception):
 
 
 class PolygonAuthError(PolygonError):
-    """Raised on HTTP 401/403 — missing or invalid API key."""
+    """Raised on HTTP 401/403: missing or invalid API key."""
 
 
 class PolygonRateLimitError(PolygonError):

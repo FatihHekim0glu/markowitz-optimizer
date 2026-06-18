@@ -52,9 +52,7 @@ class YFinanceProvider:
     # ------------------------------------------------------------------
 
     def get_ticker_meta(self, ticker: str) -> dict[str, Any]:
-        raise PolygonError(
-            "get_ticker_meta requires POLYGON_API_KEY; yfinance has no equivalent"
-        )
+        raise PolygonError("get_ticker_meta requires POLYGON_API_KEY; yfinance has no equivalent")
 
     def get_eod(self, ticker: str, start: date, end: date) -> pd.DataFrame:
         """Return daily OHLCV via yfinance, normalized to TitleCase columns.
@@ -70,9 +68,7 @@ class YFinanceProvider:
         if start > end:
             raise ValueError(f"start ({start}) must be <= end ({end})")
         frame = self._inner.fetch(ticker, start, end)
-        if "Close" in frame.columns and {"Open", "High", "Low", "Volume"}.issubset(
-            frame.columns
-        ):
+        if "Close" in frame.columns and {"Open", "High", "Low", "Volume"}.issubset(frame.columns):
             ohlcv = frame[list(_OHLCV_COLUMNS)].copy()
         else:
             close = frame["close"] if "close" in frame.columns else frame["Close"]
@@ -89,9 +85,7 @@ class YFinanceProvider:
         return cast(pd.DataFrame, ohlcv)
 
     def get_grouped_daily(self, date_: date) -> pd.DataFrame:
-        raise PolygonError(
-            "get_grouped_daily requires POLYGON_API_KEY; yfinance has no equivalent"
-        )
+        raise PolygonError("get_grouped_daily requires POLYGON_API_KEY; yfinance has no equivalent")
 
     def close(self) -> None:  # parity with PolygonProvider
         return None

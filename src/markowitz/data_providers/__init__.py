@@ -3,8 +3,8 @@
 This package layers a Polygon.io REST client and a thin yfinance adapter
 behind a uniform interface, exposing a :func:`make_provider` factory and a
 :class:`SP500UniverseBuilder` that produces survivorship-bias-aware membership
-snapshots. It is independent of the legacy ``markowitz.data`` package — that
-module still owns the on-disk Parquet cache and Fama-French utilities; this
+snapshots. It is independent of the legacy ``markowitz.data`` package, which
+still owns the on-disk Parquet cache and Fama-French utilities; this
 one adds remote OHLCV ingestion and universe construction needed for
 walk-forward research on a realistic equity universe.
 """
