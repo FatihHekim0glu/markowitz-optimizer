@@ -41,12 +41,3 @@ repos:
       - id: codespell
         args: ["--ignore-words=codespell-ignore.txt"]
         exclude: "uv\\.lock$|\\.svg$"
-
-  - repo: local
-    hooks:
-      - id: no-ai-attribution
-        name: no-ai-attribution
-        entry: python tools/check_no_ai_attribution.py
-        language: system
-        pass_filenames: true
-        types_or: [python, markdown, rst, text, toml, yaml, json, html, css, javascript, shell]

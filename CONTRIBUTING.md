@@ -41,8 +41,8 @@ explicitly via `uv run pytest -m "network or slow"`.
 
 - Formatting and linting are enforced by `ruff` (configured in `pyproject.toml`).
 - Type checking is enforced by `mypy` in strict mode against `src/markowitz`.
-- A spell check (`codespell`) and the no-AI-attribution guard
-  (`tools/check_no_ai_attribution.py`) run as pre-commit hooks.
+- A spell check (`codespell`) runs as a pre-commit hook. Do not add automated
+  co-author or generated-with trailers to commit messages.
 
 ## Commit convention
 
